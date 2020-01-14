@@ -1,6 +1,5 @@
 package com.example.themovieapps.fragment
 
-import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -15,19 +14,17 @@ import com.example.themovieapps.db.MovieHelper
 import com.example.themovieapps.helper.MappingHelper
 import com.example.themovieapps.model.Movie
 import com.example.themovieapps.viewmodel.MovieFavoriteViewModel
-import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.movie_favorite_fragment.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
-import java.util.ArrayList
+import java.util.*
 
 class MovieFavorite : Fragment() {
 
     companion object {
         fun newInstance() = MovieFavorite()
-        private const val EXTRA_STATE = "EXTRA_STATE"
     }
 
     private lateinit var viewModel: MovieFavoriteViewModel
@@ -45,43 +42,44 @@ class MovieFavorite : Fragment() {
         super.onActivityCreated(savedInstanceState)
         viewModel = ViewModelProviders.of(this).get(MovieFavoriteViewModel::class.java)
         movieHelper = MovieHelper.getInstance(context?.applicationContext)
-        showMovieFavoriteList(savedInstanceState)
-
+        showMovieFavoriteList()
     }
 
-    private fun showMovieFavoriteList(savedInstanceState: Bundle?) {
+    private fun showMovieFavoriteList() {
         rv_movie_favorite.setHasFixedSize(true)
         rv_movie_favorite.layoutManager = LinearLayoutManager(context)
         adapter = MovieFavoriteAdapter(context)
         rv_movie_favorite.adapter = adapter
+
         movieHelper.open()
 
-        if (savedInstanceState == null) {
-            GlobalScope.launch(Dispatchers.Main) {
-                progressBar_movie_favorite.visibility = View.VISIBLE
-                val deferredMovies = async(Dispatchers.IO) {
-                    val cursor = movieHelper.queryAll()
-                    MappingHelper.mapCursorToArray(cursor)
-                }
-                progressBar_movie_favorite.visibility = View.GONE
-                val movies = deferredMovies.await()
-                if (movies.size > 0) {
-                    adapter.listMovieFavorite = movies
-                } else {
-                    adapter.listMovieFavorite = ArrayList()
-                    Toast.makeText(context, R.string.no_data, Toast.LENGTH_SHORT).show()
-                }
+        GlobalScope.launch(Dispatchers.Main) {
+            progressBar_movie_favorite.visibility = View.VISIBLE
+            val deferredMovies = async(Dispatchers.IO) {
+                val cursor = movieHelper.queryAll()
+                MappingHelper.mapCursorToArray(cursor)
             }
-        } else {
-            val list = savedInstanceState.getParcelableArrayList<Movie>(EXTRA_STATE)
-            if (list != null) {
-                adapter.listMovieFavorite = list
+            progressBar_movie_favorite.visibility = View.GONE
+            val movies = deferredMovies.await()
+            if (movies.size > 0) {
+                adapter.listMovieFavorite = movies
+            } else {
+                adapter.listMovieFavorite = ArrayList()
             }
         }
-    }
 
-    override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
-        outState.putParcelableArrayList(EXTRA_STATE, adapter.listMovieFavorite)
+        adapter.setOnItemCardClick(object : MovieFavoriteAdapter.OnItemCardClick {
+            override fun onItemClicked(movie: Movie) {
+                val result = movieHelper.deleteBy(movie.id.toString()).toLong()
+                if (result > 0) {
+                    Toast.makeText(
+                        context?.applicationContext,
+                        resources.getString(R.string.success_remove, movie.title),
+                        Toast.LENGTH_SHORT
+                    ).show()
+                    showMovieFavoriteList()
+                }
+            }
+        })
     }
 }

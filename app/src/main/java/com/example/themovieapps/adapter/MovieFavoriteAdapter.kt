@@ -18,6 +18,8 @@ import java.util.*
 class MovieFavoriteAdapter(private val context: Context?) :
     RecyclerView.Adapter<MovieFavoriteAdapter.ViewHolder>() {
 
+    private var onItemCardClick: OnItemCardClick? = null
+
     var listMovieFavorite = ArrayList<Movie>()
         set(listMovieFavorite) {
             if (listMovieFavorite.size > 0) {
@@ -27,20 +29,8 @@ class MovieFavoriteAdapter(private val context: Context?) :
             notifyDataSetChanged()
         }
 
-    fun addItem(movie: Movie) {
-        this.listMovieFavorite.add(movie)
-        notifyItemInserted(this.listMovieFavorite.size - 1)
-    }
-
-    fun updateItem(position: Int, movie: Movie) {
-        this.listMovieFavorite[position] = movie
-        notifyItemChanged(position, movie)
-    }
-
-    fun removeItem(position: Int) {
-        this.listMovieFavorite.removeAt(position)
-        notifyItemRemoved(position)
-        notifyItemRangeChanged(position, this.listMovieFavorite.size)
+    fun setOnItemCardClick(onItemCardClick: OnItemCardClick) {
+        this.onItemCardClick = onItemCardClick
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -72,7 +62,13 @@ class MovieFavoriteAdapter(private val context: Context?) :
                 @Suppress("NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
                 val newDate = newFormat.format(parser)
                 tv_release_date.text = newDate
+
+                btn_remove_favorite.setOnClickListener { onItemCardClick?.onItemClicked(movie) }
             }
         }
+    }
+
+    interface OnItemCardClick {
+        fun onItemClicked(movie: Movie)
     }
 }

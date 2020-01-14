@@ -5,7 +5,7 @@ import android.content.Context
 import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
-import com.example.themovieapps.db.DatabaseContract.FavoriteMovies.Companion.TABLE_NAME
+import com.example.themovieapps.db.DatabaseContract.FavoriteMovies.Companion.TABLE_NAME_MOVIE
 import com.example.themovieapps.db.DatabaseContract.FavoriteMovies.Companion._ID
 import java.sql.SQLException
 
@@ -14,7 +14,7 @@ class MovieHelper(context: Context?) : QueryFavorite {
     private val databaseHelper: DatabaseHelper = DatabaseHelper(context)
 
     companion object {
-        private const val DATABASE_TABLE = TABLE_NAME
+        private const val DATABASE_TABLE = TABLE_NAME_MOVIE
         private var INSTANCE: MovieHelper? = null
 
         fun getInstance(context: Context?): MovieHelper {
@@ -51,5 +51,10 @@ class MovieHelper(context: Context?) : QueryFavorite {
 
     override fun deleteBy(id: String?): Int {
         return database.delete(DATABASE_TABLE, "$_ID = '$id'", null)
+    }
+
+    override fun countAll(): Long {
+        val sqlState = database.compileStatement("SELECT count(*) FROM $DATABASE_TABLE")
+        return sqlState.simpleQueryForLong()
     }
 }

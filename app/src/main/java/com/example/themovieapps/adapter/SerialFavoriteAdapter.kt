@@ -28,7 +28,6 @@ class SerialFavoriteAdapter(context: Context?) : RecyclerView.Adapter<ViewHolder
             notifyDataSetChanged()
         }
 
-
     override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int

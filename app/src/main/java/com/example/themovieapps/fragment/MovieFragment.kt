@@ -6,6 +6,7 @@ import android.content.ContentValues
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -58,7 +59,6 @@ class MovieFragment : Fragment() {
         movieHelper.open()
     }
 
-    @SuppressLint("ShowToast")
     @RequiresApi(Build.VERSION_CODES.N)
     private fun showRecyclerList() {
         adapter = MovieAdapter(movies)
@@ -93,6 +93,7 @@ class MovieFragment : Fragment() {
                     movie.id = result.toInt()
                     val success = resources.getString(R.string.success_insert_data, movie.title)
                     Snackbar.make(rv_movie, success, Snackbar.LENGTH_SHORT).show()
+                    Log.d("INSERT_VALUE", result.toString())
                 } else {
                     Toast.makeText(activity, R.string.failed_insert_data, Toast.LENGTH_SHORT).show()
                 }
