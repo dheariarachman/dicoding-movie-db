@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    tools:ignore="UnusedNavigation"
+    app:startDestination="@id/movieFragment">
+
+    <fragment
+        android:id="@+id/favoriteFragment"
+        android:name="com.example.themovieapps.fragment.FavoriteFragment"
+        android:label="@string/favorite"
+        tools:layout="@layout/fragment_favorite" >
+        <action
+            android:id="@+id/action_favoriteFragment_to_movieFragment2"
+            app:destination="@id/movieFragment" />
+        <action
+            android:id="@+id/action_favoriteFragment_to_serialFragment2"
+            app:destination="@id/serialFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/movieFragment"
+        android:name="com.example.themovieapps.fragment.MovieFragment"
+        android:label="@string/title_1"
+        tools:layout="@layout/fragment_movie" >
+        <action
+            android:id="@+id/action_movieFragment_to_detailMovieActivity"
+            app:destination="@id/detailMovieActivity" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/serialFragment"
+        android:name="com.example.themovieapps.fragment.SerialFragment"
+        android:label="@string/title_2"
+        tools:layout="@layout/fragment_serial" >
+        <action
+            android:id="@+id/action_serialFragment_to_detailSerialActivity"
+            app:destination="@id/detailSerialActivity" />
+    </fragment>
+
+    <activity
+        android:id="@+id/detailMovieActivity"
+        android:name="com.example.themovieapps.activity.DetailMovieActivity"
+        android:label="DetailMovieActivity" />
+
+    <activity
+        android:id="@+id/detailSerialActivity"
+        android:name="com.example.themovieapps.activity.DetailSerialActivity"
+        android:label="DetailSerialActivity" />
+</navigation>

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Aplikasi Film</string>
+    <string name="image_posters_placeholder">Poster Film / Serial TV</string>
+    <string name="judul_film">Judul Film / Serial TV</string>
+    <string name="lipsum">Lorem Ipsum Dolor Sit Amet</string>
+    <string name="release_date">November, 2019</string>
+    <string name="rating_value">10</string>
+    <string name="rating_text">Peringkat</string>
+    <string name="genres">Aliran</string>
+    <string name="favorite">Favorit</string>
+    <string name="comment">Komentar</string>
+
+    <!-- Movie Genres -->
+
+    <!-- Movie Description -->
+
+    <!-- Genres Serial -->
+
+    <!-- Description Serial -->
+
+    <!-- TODO: Remove or change this placeholder text -->
+
+    <!--  Title Tabs View  -->
+    <string name="title_1">Film</string>
+    <string name="title_2">Serial TV</string>
+
+    <!-- Menu Titles -->
+    <string name="menu_change_lang">Ganti Bahasa</string>
+    <string name="no_translations">Tidak terdapat terjemahan untuk bahasa yang anda pilih</string>
+    <string name="desc_image">Deskripsi Gambar</string>
+    <string name="failed_insert_data">Gagal Menambahkan Favorite Movie</string>
+    <string name="success_insert_data">%1$s Berhasil ditambahkan ke Favorit</string>
+    <string name="no_data">Tidak Ada Data</string>
+</resources>
