@@ -1,6 +1,8 @@
 package com.example.themovieapps.fragment
 
+import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,6 +11,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.themovieapps.R
+import com.example.themovieapps.activity.DetailMovieActivity
 import com.example.themovieapps.adapter.MovieFavoriteAdapter
 import com.example.themovieapps.db.MovieHelper
 import com.example.themovieapps.helper.MappingHelper
@@ -61,6 +64,8 @@ class MovieFavorite : Fragment() {
             }
             progressBar_movie_favorite.visibility = View.GONE
             val movies = deferredMovies.await()
+            Log.d("MOVIE_LENGTH", movies.size.toString())
+            Log.d("MOVIE_LIST", "Data Movie : $movies")
             if (movies.size > 0) {
                 adapter.listMovieFavorite = movies
             } else {
@@ -79,6 +84,12 @@ class MovieFavorite : Fragment() {
                     ).show()
                     showMovieFavoriteList()
                 }
+            }
+
+            override fun onItemOpenDetail(movie: Movie) {
+                val detailMovie = Intent(context?.applicationContext, DetailMovieActivity::class.java)
+                detailMovie.putExtra(DetailMovieActivity.DETAIL_MOVIE, movie)
+                startActivity(detailMovie)
             }
         })
     }

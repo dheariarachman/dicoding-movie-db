@@ -64,11 +64,14 @@ class MovieFavoriteAdapter(private val context: Context?) :
                 tv_release_date.text = newDate
 
                 btn_remove_favorite.setOnClickListener { onItemCardClick?.onItemClicked(movie) }
+
+                itemView.setOnClickListener { onItemCardClick?.onItemOpenDetail(movie) }
             }
         }
     }
 
     interface OnItemCardClick {
         fun onItemClicked(movie: Movie)
+        fun onItemOpenDetail(movie: Movie)
     }
 }

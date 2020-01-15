@@ -19,6 +19,8 @@ import kotlin.collections.ArrayList
 
 class SerialFavoriteAdapter(context: Context?) : RecyclerView.Adapter<ViewHolder>() {
 
+    private var onItemCardClick: OnItemCardClick? = null
+
     var listFavoriteSerial = ArrayList<Serial>()
         set(listFavoriteSerial) {
             if (listFavoriteSerial.size > 0) {
@@ -32,7 +34,8 @@ class SerialFavoriteAdapter(context: Context?) : RecyclerView.Adapter<ViewHolder
         parent: ViewGroup,
         viewType: Int
     ): ViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.favorite_item, parent, false)
+        val view =
+            LayoutInflater.from(parent.context).inflate(R.layout.favorite_item, parent, false)
         return ViewHolder(view)
     }
 
@@ -42,13 +45,19 @@ class SerialFavoriteAdapter(context: Context?) : RecyclerView.Adapter<ViewHolder
         holder.bind(listFavoriteSerial[position])
     }
 
+    fun setOnItemCardClick(onItemCardClick: OnItemCardClick) {
+        this.onItemCardClick = onItemCardClick
+    }
+
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         @SuppressLint("SimpleDateFormat")
         fun bind(serial: Serial) {
             with(itemView) {
                 tv_title_banner.text = serial.title
                 tv_description.text =
-                    if (serial.description.isNotEmpty()) serial.description else resources.getString(R.string.no_translations)
+                    if (serial.description.isNotEmpty()) serial.description else resources.getString(
+                        R.string.no_translations
+                    )
                 Glide.with(itemView.context)
                     .load(Misc.BASE_IMG_URL + serial.imgPoster)
                     .apply(RequestOptions().override(155, 155))
@@ -59,7 +68,16 @@ class SerialFavoriteAdapter(context: Context?) : RecyclerView.Adapter<ViewHolder
                 @Suppress("NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
                 val newDate = newFormat.format(parser)
                 tv_release_date.text = newDate
+
+                btn_remove_favorite.setOnClickListener { onItemCardClick?.onItemRemove(serial) }
+
+                itemView.setOnClickListener { onItemCardClick?.onItemOpenDetail(serial) }
             }
         }
+    }
+
+    interface OnItemCardClick {
+        fun onItemRemove(serial: Serial)
+        fun onItemOpenDetail(serial: Serial)
     }
 }

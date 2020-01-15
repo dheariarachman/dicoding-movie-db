@@ -1,7 +1,6 @@
 package com.example.themovieapps.fragment
 
 
-import android.annotation.SuppressLint
 import android.content.ContentValues
 import android.content.Intent
 import android.os.Build
@@ -87,10 +86,11 @@ class MovieFragment : Fragment() {
                 values.put(DatabaseContract.FavoriteMovies.DESC, movie.description)
                 values.put(DatabaseContract.FavoriteMovies.IMG, movie.imgPoster)
                 values.put(DatabaseContract.FavoriteMovies.YEARS, movie.years)
+                values.put(DatabaseContract.FavoriteMovies._ID, movie.id)
 
                 val result = movieHelper.insert(values)
+                Log.d("INSERT_RESULT", result.toString())
                 if (result > 0) {
-                    movie.id = result.toInt()
                     val success = resources.getString(R.string.success_insert_data, movie.title)
                     Snackbar.make(rv_movie, success, Snackbar.LENGTH_SHORT).show()
                     Log.d("INSERT_VALUE", result.toString())

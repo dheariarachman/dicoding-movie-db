@@ -83,6 +83,7 @@ class SerialFragment : Fragment() {
                 values.put(DatabaseContract.FavoriteSerial.DESC, serial.description)
                 values.put(DatabaseContract.FavoriteSerial.IMG, serial.imgPoster)
                 values.put(DatabaseContract.FavoriteSerial.YEARS, serial.years)
+                values.put(DatabaseContract.FavoriteSerial._ID, serial.id)
 
                 val result = serialHelper.insert(values)
                 if (result > 0) {
