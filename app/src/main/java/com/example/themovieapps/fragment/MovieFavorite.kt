@@ -54,8 +54,6 @@ class MovieFavorite : Fragment() {
         adapter = MovieFavoriteAdapter(context)
         rv_movie_favorite.adapter = adapter
 
-        movieHelper.open()
-
         GlobalScope.launch(Dispatchers.Main) {
             progressBar_movie_favorite.visibility = View.VISIBLE
             val deferredMovies = async(Dispatchers.IO) {

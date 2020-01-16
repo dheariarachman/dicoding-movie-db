@@ -51,7 +51,6 @@ class SerialFavorite : Fragment() {
         rv_serial_favorite.setHasFixedSize(true)
         adapter = SerialFavoriteAdapter(context)
         rv_serial_favorite.adapter = adapter
-        serialHelper.open()
 
         GlobalScope.launch(Dispatchers.Main) {
             progressBar_serial_favorite.visibility = View.VISIBLE

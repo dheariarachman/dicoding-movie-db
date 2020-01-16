@@ -11,11 +11,9 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.example.themovieapps.R
-import com.example.themovieapps.adapter.SectionPagerAdapter
 import com.example.themovieapps.db.MovieHelper
 import com.example.themovieapps.db.SerialHelper
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
 
@@ -40,6 +38,9 @@ class MainActivity : AppCompatActivity() {
 
         movieHelper = MovieHelper.getInstance(applicationContext)
         serialHelper = SerialHelper.getInstance(applicationContext)
+
+        movieHelper.open()
+        serialHelper.open()
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {

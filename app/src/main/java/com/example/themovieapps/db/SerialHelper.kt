@@ -35,9 +35,9 @@ class SerialHelper(context: Context?) : QueryFavorite {
     }
 
     fun close() {
-        databaseHelper.close()
         if (database.isOpen) {
             database.close()
+            databaseHelper.close()
         }
     }
 
