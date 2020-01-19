@@ -1,11 +1,18 @@
 package com.example.themovieapps.misc
 
-import com.example.themovieapps.BuildConfig
+import android.annotation.SuppressLint
+import java.text.SimpleDateFormat
+import java.util.*
 
-class Misc {
-    companion object {
-        const val API_KEY = BuildConfig.API_KEY
-        const val BASE_URL = "https://api.themoviedb.org/"
-        const val BASE_IMG_URL = "https://image.tmdb.org/t/p/w185"
+object Misc {
+    const val BASE_URL = "https://api.themoviedb.org/"
+    const val BASE_IMG_URL = "https://image.tmdb.org/t/p/w185"
+
+    @Suppress("NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
+    @SuppressLint("SimpleDateFormat")
+    fun convertStringToDate(textDate: String, firstPattern: String, secondPattern: String): String {
+        val parser = SimpleDateFormat(firstPattern).parse(textDate)
+        val formatter = SimpleDateFormat(secondPattern, Locale.getDefault())
+        return formatter.format(parser)
     }
 }

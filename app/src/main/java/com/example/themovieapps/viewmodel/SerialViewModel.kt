@@ -2,15 +2,14 @@ package com.example.themovieapps.viewmodel
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.example.themovieapps.misc.Misc
+import com.example.themovieapps.BuildConfig.API_KEY
 import com.example.themovieapps.model.Serial
 import com.example.themovieapps.model.SerialResponse
 import com.example.themovieapps.service.MovieDBService
+import com.example.themovieapps.service.RetrofitClient
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
 
 class SerialViewModel : ViewModel() {
 
@@ -18,14 +17,9 @@ class SerialViewModel : ViewModel() {
     private val errorMessage = MutableLiveData<String>()
 
     internal fun setSerialList(locale: String) {
-        val retrofit = Retrofit.Builder()
-            .baseUrl(Misc.BASE_URL)
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
-
-        val service = retrofit.create(MovieDBService::class.java)
-        val call = service.getAllSerialData(Misc.API_KEY, locale)
-        call.enqueue(object : Callback<SerialResponse> {
+        val mApiService: MovieDBService? = RetrofitClient.client?.create(MovieDBService::class.java)
+        val call = mApiService?.getAllSerialData(API_KEY, locale)
+        call?.enqueue(object : Callback<SerialResponse> {
             override fun onFailure(call: Call<SerialResponse>, t: Throwable) {
                 errorMessage.postValue(t.message)
             }

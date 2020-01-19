@@ -3,7 +3,7 @@ package com.example.themovieapps.viewmodel
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.example.themovieapps.misc.Misc
+import com.example.themovieapps.BuildConfig.API_KEY
 import com.example.themovieapps.model.Movie
 import com.example.themovieapps.model.MovieResponse
 import com.example.themovieapps.service.MovieDBService
@@ -11,8 +11,6 @@ import com.example.themovieapps.service.RetrofitClient
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
 
 class MovieViewModel : ViewModel() {
 
@@ -20,7 +18,7 @@ class MovieViewModel : ViewModel() {
 
     internal fun setMovie(locale: String) {
         val mApiService: MovieDBService? = RetrofitClient.client?.create(MovieDBService::class.java)
-        val call = mApiService?.getAllMovieData(Misc.API_KEY, locale)
+        val call = mApiService?.getAllMovieData(API_KEY, locale)
         call?.enqueue(object : Callback<MovieResponse> {
             override fun onFailure(call: Call<MovieResponse>, t: Throwable) {
                 Log.d(MovieViewModel::class.java.simpleName, t.message.toString())
@@ -49,9 +47,6 @@ class MovieViewModel : ViewModel() {
         })
     }
 
-    internal fun setMovieBySearch(locale: String) {
-
-    }
 
     internal fun getMovies(): MutableLiveData<ArrayList<Movie>> {
         return listMovies

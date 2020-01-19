@@ -5,10 +5,9 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
 import com.example.themovieapps.R
+import com.example.themovieapps.misc.Misc.convertStringToDate
 import com.example.themovieapps.model.Movie
 import kotlinx.android.synthetic.main.activity_detail_movie.*
-import java.text.SimpleDateFormat
-import java.util.*
 
 class DetailMovieActivity : AppCompatActivity() {
 
@@ -32,10 +31,11 @@ class DetailMovieActivity : AppCompatActivity() {
             .fitCenter().into(img_banner_detail)
         tv_title_detail.text = detailMovie.title
 
-        val parser = SimpleDateFormat("yyyy-MM-dd").parse(detailMovie.years)
-        val formatter = SimpleDateFormat("MMMM d, yyyy", Locale.getDefault())
-        @Suppress("NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
-        tv_release_date_detail.text = formatter.format(parser)
+        /**
+         * parsing date into SimpleDateFormat
+         */
+        tv_release_date_detail.text = convertStringToDate(detailMovie.years, "yyyy-MM-dd", "MMMM d, yyyy")
+
         tv_description_detail.text =
             if (detailMovie.description.isNotEmpty()) detailMovie.description else resources.getString(
                 R.string.no_translations
