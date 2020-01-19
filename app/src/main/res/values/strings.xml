@@ -25,11 +25,9 @@
     <!-- no_translation -->
     <string name="no_translations">There is no translation for the language you selected</string>
 
-    <string name="hello_blank_fragment" translatable="false">Hello blank fragment</string>
     <string name="desc_image">Description Image</string>
     <string name="failed_insert_data">Failed to Add Favorite</string>
     <string name="success_insert_data">%1$s Success Added to Favorite</string>
-    <string name="no_data">There is no Data</string>
     <string name="success_remove">%1$s Success Remove from Favorite</string>
 
 </resources>
