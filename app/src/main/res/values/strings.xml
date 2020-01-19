@@ -21,10 +21,8 @@
     <!-- Menu Titles -->
     <string name="menu_change_lang">Change Language</string>
     <string name="menu_search">Search Movie or TV Show</string>
-
-    <!-- no_translation -->
+    <string name="no_data">There is no data</string>
     <string name="no_translations">There is no translation for the language you selected</string>
-
     <string name="desc_image">Description Image</string>
     <string name="failed_insert_data">Failed to Add Favorite</string>
     <string name="success_insert_data">%1$s Success Added to Favorite</string>

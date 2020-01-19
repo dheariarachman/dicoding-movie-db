@@ -13,6 +13,7 @@ import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.themovieapps.R
 import com.example.themovieapps.activity.DetailSerialActivity
@@ -21,6 +22,7 @@ import com.example.themovieapps.db.DatabaseContract
 import com.example.themovieapps.db.SerialHelper
 import com.example.themovieapps.model.Serial
 import com.example.themovieapps.viewmodel.SerialViewModel
+import com.example.themovieapps.viewmodel.SharedViewModel
 import kotlinx.android.synthetic.main.fragment_serial.*
 
 /**
@@ -31,6 +33,8 @@ class SerialFragment : Fragment() {
     private lateinit var serialAdapter: SerialAdapter
     private lateinit var serialViewModel: SerialViewModel
     private lateinit var serialHelper: SerialHelper
+
+    private lateinit var sharedViewModel: SharedViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -51,7 +55,26 @@ class SerialFragment : Fragment() {
         rv_serial.setHasFixedSize(true)
         showListSerial()
 
-        serialHelper = SerialHelper.getInstance(context)
+        sharedViewModel = activity?.run {
+            ViewModelProviders.of(this).get(SharedViewModel::class.java)
+        }
+            ?: throw Exception("Invalid Activity")
+
+        sharedViewModel.queryString.observe(this, Observer {
+            if (it != null) {
+                serialViewModel.setSerialListBySearch(
+                    resources.configuration.locales.toLanguageTags(),
+                    it
+                )
+                showLoading(true)
+            }
+        })
+
+        serialViewModel.errorMessage.observe(this, Observer {
+            Toast.makeText(this.context, it, Toast.LENGTH_SHORT).show()
+        })
+
+        serialHelper = SerialHelper.getInstance(context?.applicationContext)
         serialHelper.open()
     }
 
@@ -64,10 +87,14 @@ class SerialFragment : Fragment() {
         serialViewModel.setSerialList(resources.configuration.locales.toLanguageTags())
         showLoading(true)
         serialViewModel.getSerialList().observe(this, Observer {
-            if (it != null) {
+            if (it.size > 0) {
                 serialAdapter.setData(it)
                 showLoading(false)
+                sharedViewModel.queryString.value = null
+            } else {
+                serialViewModel.errorMessage.value = resources.getString(R.string.no_data)
             }
+
         })
 
         serialAdapter.setOnSerialItemClicked(object :
@@ -97,10 +124,6 @@ class SerialFragment : Fragment() {
                     ).show()
                 }
             }
-        })
-
-        serialViewModel.getErrorResponse().observe(this, Observer {
-            Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
         })
     }
 

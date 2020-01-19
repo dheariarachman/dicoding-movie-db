@@ -6,8 +6,8 @@ import kotlinx.android.parcel.Parcelize
 @Parcelize
 data class Serial(
     var id: Int? = null,
-    val title: String,
-    val description: String,
+    val title: String? = null,
+    val description: String? = null,
     val imgPoster: String? = null,
-    val years: String
+    val years: String? = null
 ) : Parcelable

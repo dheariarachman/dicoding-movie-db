@@ -1,6 +1,7 @@
 package com.example.themovieapps.misc
 
 import android.annotation.SuppressLint
+import android.util.Log
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -10,9 +11,18 @@ object Misc {
 
     @Suppress("NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
     @SuppressLint("SimpleDateFormat")
-    fun convertStringToDate(textDate: String, firstPattern: String, secondPattern: String): String {
-        val parser = SimpleDateFormat(firstPattern).parse(textDate)
-        val formatter = SimpleDateFormat(secondPattern, Locale.getDefault())
-        return formatter.format(parser)
+    fun convertStringToDate(
+        textDate: String?,
+        firstPattern: String,
+        secondPattern: String
+    ): String {
+        var date = ""
+        Log.d("NULL_CHECK", textDate)
+        if (textDate != "") {
+            val parser = SimpleDateFormat(firstPattern).parse(textDate)
+            val formatter = SimpleDateFormat(secondPattern, Locale.getDefault())
+            date = formatter.format(parser)
+        }
+        return date
     }
 }

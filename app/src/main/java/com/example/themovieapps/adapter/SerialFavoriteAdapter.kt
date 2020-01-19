@@ -11,11 +11,9 @@ import com.bumptech.glide.request.RequestOptions
 import com.example.themovieapps.R
 import com.example.themovieapps.adapter.SerialFavoriteAdapter.ViewHolder
 import com.example.themovieapps.misc.Misc
+import com.example.themovieapps.misc.Misc.convertStringToDate
 import com.example.themovieapps.model.Serial
 import kotlinx.android.synthetic.main.favorite_item.view.*
-import java.text.SimpleDateFormat
-import java.util.*
-import kotlin.collections.ArrayList
 
 class SerialFavoriteAdapter(context: Context?) : RecyclerView.Adapter<ViewHolder>() {
 
@@ -55,7 +53,7 @@ class SerialFavoriteAdapter(context: Context?) : RecyclerView.Adapter<ViewHolder
             with(itemView) {
                 tv_title_banner.text = serial.title
                 tv_description.text =
-                    if (serial.description.isNotEmpty()) serial.description else resources.getString(
+                    if (serial.description!!.isNotEmpty()) serial.description else resources.getString(
                         R.string.no_translations
                     )
                 Glide.with(itemView.context)
@@ -63,11 +61,8 @@ class SerialFavoriteAdapter(context: Context?) : RecyclerView.Adapter<ViewHolder
                     .apply(RequestOptions().override(155, 155))
                     .into(img_banner)
 
-                val parser = SimpleDateFormat("yyyy-MM-dd").parse(serial.years)
-                val newFormat = SimpleDateFormat("MMMM d, yyyy", Locale.getDefault())
-                @Suppress("NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
-                val newDate = newFormat.format(parser)
-                tv_release_date.text = newDate
+                tv_release_date.text =
+                    convertStringToDate(serial.years, "yyyy-MM-dd", "MMMM d, yyyy")
 
                 btn_remove_favorite.setOnClickListener { onItemCardClick?.onItemRemove(serial) }
 

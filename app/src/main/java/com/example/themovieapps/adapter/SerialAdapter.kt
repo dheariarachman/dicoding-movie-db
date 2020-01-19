@@ -9,9 +9,9 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.example.themovieapps.R
 import com.example.themovieapps.adapter.SerialAdapter.SerialViewHolder
+import com.example.themovieapps.misc.Misc.convertStringToDate
 import com.example.themovieapps.model.Serial
 import kotlinx.android.synthetic.main.movie_item.view.*
-import java.text.SimpleDateFormat
 import java.util.*
 
 class SerialAdapter(private val listSerial: ArrayList<Serial>) :
@@ -43,7 +43,6 @@ class SerialAdapter(private val listSerial: ArrayList<Serial>) :
     }
 
     inner class SerialViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        @SuppressLint("SimpleDateFormat")
         fun bind(serial: Serial) {
             with(itemView) {
                 Glide.with(itemView.context)
@@ -51,19 +50,21 @@ class SerialAdapter(private val listSerial: ArrayList<Serial>) :
                     .apply(RequestOptions().override(155, 155))
                     .into(img_banner)
                 tv_title_banner.text = serial.title
-                tv_description.text = if (serial.description.isNotEmpty()) serial.description else resources.getString(R.string.no_translations)
+                tv_description.text =
+                    if (serial.description!!.isNotEmpty()) serial.description else resources.getString(
+                        R.string.no_translations
+                    )
 
-                // Release Date Change Format
-                // Using SimpleDateFormat
-                val parser = SimpleDateFormat("yyyy-MM-dd")
-                val newFormat = SimpleDateFormat("MMMM d, yyyy", Locale.getDefault())
-                @Suppress("NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
-                val newDate = newFormat.format(parser.parse(serial.years))
-                tv_release_date.text = newDate
+                tv_release_date.text =
+                    convertStringToDate(serial.years, "yyyy-MM-dd", "MMMM d, yyyy")
 
                 itemView.setOnClickListener { onSerialItemClick.onSerialClicked(serial) }
 
-                imageButtonFavorite.setOnClickListener { onSerialItemClick.onSaveSerialToFavorite(serial) }
+                imageButtonFavorite.setOnClickListener {
+                    onSerialItemClick.onSaveSerialToFavorite(
+                        serial
+                    )
+                }
             }
         }
     }

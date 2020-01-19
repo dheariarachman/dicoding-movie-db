@@ -14,14 +14,46 @@ import retrofit2.Response
 class SerialViewModel : ViewModel() {
 
     private val listSerial = MutableLiveData<ArrayList<Serial>>()
-    private val errorMessage = MutableLiveData<String>()
+    var errorMessage = MutableLiveData<String>()
 
     internal fun setSerialList(locale: String) {
         val mApiService: MovieDBService? = RetrofitClient.client?.create(MovieDBService::class.java)
         val call = mApiService?.getAllSerialData(API_KEY, locale)
         call?.enqueue(object : Callback<SerialResponse> {
             override fun onFailure(call: Call<SerialResponse>, t: Throwable) {
-                errorMessage.postValue(t.message)
+                errorMessage.value = t.localizedMessage
+            }
+
+            override fun onResponse(
+                call: Call<SerialResponse>,
+                response: Response<SerialResponse>
+            ) {
+                if (response.code() == 200) {
+                    val subListSerial = ArrayList<Serial>()
+                    for (i in response.body()!!.results.indices) {
+                        val serialResponse = response.body()!!.results[i]
+                        val serial = Serial(
+                            serialResponse.id,
+                            serialResponse.name,
+                            serialResponse.overview,
+                            serialResponse.poster_path,
+                            serialResponse.first_air_date
+                        )
+                        subListSerial.add(serial)
+                    }
+                    listSerial.postValue(subListSerial)
+                }
+            }
+
+        })
+    }
+
+    internal fun setSerialListBySearch(locale: String, query: String) {
+        val mApiService: MovieDBService? = RetrofitClient.client?.create(MovieDBService::class.java)
+        val call = mApiService?.getSerialBySearch(API_KEY, locale, query)
+        call?.enqueue(object : Callback<SerialResponse> {
+            override fun onFailure(call: Call<SerialResponse>, t: Throwable) {
+                errorMessage.value = t.localizedMessage
             }
 
             override fun onResponse(
@@ -50,9 +82,5 @@ class SerialViewModel : ViewModel() {
 
     internal fun getSerialList(): MutableLiveData<ArrayList<Serial>> {
         return listSerial
-    }
-
-    internal fun getErrorResponse() : MutableLiveData<String> {
-        return errorMessage
     }
 }

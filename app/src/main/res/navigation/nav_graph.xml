@@ -2,32 +2,27 @@
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:ignore="UnusedNavigation"
     app:startDestination="@id/movieFragment">
 
     <fragment
         android:id="@+id/favoriteFragment"
         android:name="com.example.themovieapps.fragment.FavoriteFragment"
         android:label="@string/favorite"
-        tools:layout="@layout/fragment_favorite" >
-        <action app:destination="@id/movieFragment" />
-        <action app:destination="@id/serialFragment" />
+        tools:layout="@layout/fragment_favorite">
     </fragment>
 
     <fragment
         android:id="@+id/movieFragment"
         android:name="com.example.themovieapps.fragment.MovieFragment"
         android:label="@string/title_1"
-        tools:layout="@layout/fragment_movie" >
-        <action app:destination="@id/detailMovieActivity" />
+        tools:layout="@layout/fragment_movie">
     </fragment>
 
     <fragment
         android:id="@+id/serialFragment"
         android:name="com.example.themovieapps.fragment.SerialFragment"
         android:label="@string/title_2"
-        tools:layout="@layout/fragment_serial" >
-        <action app:destination="@id/detailSerialActivity" />
+        tools:layout="@layout/fragment_serial">
     </fragment>
 
     <activity

@@ -1,6 +1,5 @@
 package com.example.themovieapps.adapter
 
-import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,9 +8,9 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.example.themovieapps.R
 import com.example.themovieapps.misc.Misc
+import com.example.themovieapps.misc.Misc.convertStringToDate
 import com.example.themovieapps.model.Movie
 import kotlinx.android.synthetic.main.movie_item.view.*
-import java.text.SimpleDateFormat
 import java.util.*
 
 class MovieAdapter(private val listMovie: ArrayList<Movie>) :
@@ -43,7 +42,6 @@ class MovieAdapter(private val listMovie: ArrayList<Movie>) :
     }
 
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        @SuppressLint("SimpleDateFormat")
         fun bind(movie: Movie) {
             with(itemView) {
                 Glide.with(itemView.context)
@@ -54,14 +52,10 @@ class MovieAdapter(private val listMovie: ArrayList<Movie>) :
 
                 // Change Empty String
                 tv_description.text =
-                    if (movie.description.isNotEmpty()) movie.description else resources.getString(R.string.no_translations)
+                    movie.description ?: resources.getString(R.string.no_translations)
 
-                // Change Format Date using Simple Date Format
-                val parser = SimpleDateFormat("yyyy-MM-dd").parse(movie.years)
-                val newFormat = SimpleDateFormat("MMMM d, yyyy", Locale.getDefault())
-                @Suppress("NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
-                val newDate = newFormat.format(parser)
-                tv_release_date.text = newDate
+                tv_release_date.text =
+                    convertStringToDate(movie.years, "yyyy-MM-dd", "MMMM d, yyyy")
 
                 imageButtonFavorite.setOnClickListener { onItemClickCallback?.onSaveMovie(movie) }
 

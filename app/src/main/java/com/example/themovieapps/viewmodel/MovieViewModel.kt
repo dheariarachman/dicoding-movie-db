@@ -15,6 +15,7 @@ import retrofit2.Response
 class MovieViewModel : ViewModel() {
 
     val listMovies = MutableLiveData<ArrayList<Movie>>()
+    val errorResponse = MutableLiveData<String>()
 
     internal fun setMovie(locale: String) {
         val mApiService: MovieDBService? = RetrofitClient.client?.create(MovieDBService::class.java)
@@ -22,6 +23,40 @@ class MovieViewModel : ViewModel() {
         call?.enqueue(object : Callback<MovieResponse> {
             override fun onFailure(call: Call<MovieResponse>, t: Throwable) {
                 Log.d(MovieViewModel::class.java.simpleName, t.message.toString())
+                errorResponse.value = t.localizedMessage
+            }
+
+            override fun onResponse(call: Call<MovieResponse>, response: Response<MovieResponse>) {
+                if (response.code() == 200) {
+                    val subListMovies = ArrayList<Movie>()
+                    if (response.body()!!.results.size > 0) {
+                        for (i in response.body()!!.results.indices) {
+                            val movieResource = response.body()!!.results[i]
+                            val movie = Movie(
+                                movieResource.id,
+                                movieResource.title,
+                                movieResource.overview,
+                                movieResource.poster_path,
+                                movieResource.release_date
+                            )
+                            subListMovies.add(movie)
+                        }
+                        listMovies.postValue(subListMovies)
+                    }
+                } else {
+                    Log.d(MovieViewModel::class.java.simpleName, response.message())
+                }
+            }
+
+        })
+    }
+
+    internal fun setMovieBySearch(query: String, locale: String) {
+        val mApiService: MovieDBService? = RetrofitClient.client?.create(MovieDBService::class.java)
+        val call = mApiService?.getMovieBySearch(API_KEY, locale, query)
+        call?.enqueue(object : Callback<MovieResponse> {
+            override fun onFailure(call: Call<MovieResponse>, t: Throwable) {
+                errorResponse.value = t.localizedMessage
             }
 
             override fun onResponse(call: Call<MovieResponse>, response: Response<MovieResponse>) {
@@ -40,13 +75,12 @@ class MovieViewModel : ViewModel() {
                     }
                     listMovies.postValue(subListMovies)
                 } else {
-                    Log.d(MovieViewModel::class.java.simpleName, response.message())
+                    errorResponse.value = response.message()
                 }
             }
 
         })
     }
-
 
     internal fun getMovies(): MutableLiveData<ArrayList<Movie>> {
         return listMovies

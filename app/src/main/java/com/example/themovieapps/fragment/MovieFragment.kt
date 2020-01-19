@@ -5,7 +5,6 @@ import android.content.ContentValues
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,6 +13,7 @@ import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.themovieapps.R
 import com.example.themovieapps.activity.DetailMovieActivity
@@ -22,6 +22,7 @@ import com.example.themovieapps.db.DatabaseContract
 import com.example.themovieapps.db.MovieHelper
 import com.example.themovieapps.model.Movie
 import com.example.themovieapps.viewmodel.MovieViewModel
+import com.example.themovieapps.viewmodel.SharedViewModel
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.fragment_movie.*
 
@@ -35,6 +36,8 @@ class MovieFragment : Fragment() {
     private lateinit var movieHelper: MovieHelper
 
     private var movies = arrayListOf<Movie>()
+
+    private lateinit var sharedViewModel: SharedViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -54,6 +57,25 @@ class MovieFragment : Fragment() {
             ViewModelProvider.NewInstanceFactory()
         ).get(MovieViewModel::class.java)
         showRecyclerList()
+
+        sharedViewModel =
+            activity?.run { ViewModelProviders.of(this).get(SharedViewModel::class.java) }
+                ?: throw Exception("Invalid Activity")
+
+        sharedViewModel.queryString.observe(this, Observer {
+            if (it != null) {
+                movieViewModel.setMovieBySearch(
+                    it,
+                    resources.configuration.locales.toLanguageTags()
+                )
+                showLoading(true)
+            }
+        })
+
+        movieViewModel.errorResponse.observe(this, Observer {
+            Toast.makeText(this.context, it, Toast.LENGTH_SHORT).show()
+        })
+
         movieHelper = MovieHelper.getInstance(activity?.applicationContext)
         movieHelper.open()
     }
@@ -67,9 +89,16 @@ class MovieFragment : Fragment() {
         movieViewModel.setMovie(resources.configuration.locales.toLanguageTags())
         showLoading(true)
         movieViewModel.getMovies().observe(this, Observer {
-            if (it != null) {
+            if (it.size > 0) {
                 adapter.setData(it)
                 showLoading(false)
+                sharedViewModel.queryString.value = null
+            } else {
+                Toast.makeText(
+                    this.context,
+                    resources.getString(R.string.no_data),
+                    Toast.LENGTH_SHORT
+                ).show()
             }
         })
 
@@ -89,11 +118,9 @@ class MovieFragment : Fragment() {
                 values.put(DatabaseContract.FavoriteMovies._ID, movie.id)
 
                 val result = movieHelper.insert(values)
-                Log.d("INSERT_RESULT", result.toString())
                 if (result > 0) {
                     val success = resources.getString(R.string.success_insert_data, movie.title)
                     Snackbar.make(rv_movie, success, Snackbar.LENGTH_SHORT).show()
-                    Log.d("INSERT_VALUE", result.toString())
                 } else {
                     Toast.makeText(activity, R.string.failed_insert_data, Toast.LENGTH_SHORT).show()
                 }

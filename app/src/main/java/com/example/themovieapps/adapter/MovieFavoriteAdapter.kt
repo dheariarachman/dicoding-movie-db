@@ -10,9 +10,9 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.example.themovieapps.R
 import com.example.themovieapps.misc.Misc
+import com.example.themovieapps.misc.Misc.convertStringToDate
 import com.example.themovieapps.model.Movie
 import kotlinx.android.synthetic.main.favorite_item.view.*
-import java.text.SimpleDateFormat
 import java.util.*
 
 class MovieFavoriteAdapter(private val context: Context?) :
@@ -51,17 +51,14 @@ class MovieFavoriteAdapter(private val context: Context?) :
             with(itemView) {
                 tv_title_banner.text = movie.title
                 tv_description.text =
-                    if (movie.description.isNotEmpty()) movie.description else resources.getString(R.string.no_translations)
+                    movie.description ?: resources.getString(R.string.no_translations)
                 Glide.with(itemView.context)
                     .load(Misc.BASE_IMG_URL + movie.imgPoster)
                     .apply(RequestOptions().override(155, 155))
                     .into(img_banner)
 
-                val parser = SimpleDateFormat("yyyy-MM-dd").parse(movie.years)
-                val newFormat = SimpleDateFormat("MMMM d, yyyy", Locale.getDefault())
-                @Suppress("NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
-                val newDate = newFormat.format(parser)
-                tv_release_date.text = newDate
+                tv_release_date.text =
+                    convertStringToDate(movie.years, "yyyy-MM-dd", "MMMM d, yyyy")
 
                 btn_remove_favorite.setOnClickListener { onItemCardClick?.onItemClicked(movie) }
 

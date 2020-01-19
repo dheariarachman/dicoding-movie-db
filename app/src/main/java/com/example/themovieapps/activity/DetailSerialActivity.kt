@@ -37,7 +37,7 @@ class DetailSerialActivity : AppCompatActivity() {
         tv_release_date_detail_serial.text =
             convertStringToDate(serial.years, "yyyy-MM-dd", "MMMM d, yyyy")
         tv_description_detail_serial.text =
-            if (serial.description.isNotEmpty()) serial.description else resources.getString(R.string.no_translations)
+            if (serial.description!!.isNotEmpty()) serial.description else resources.getString(R.string.no_translations)
         tv_favorite_detail_serial.text = randomFav.toString()
         tv_comment_serial.text = randomComm.toString()
     }
