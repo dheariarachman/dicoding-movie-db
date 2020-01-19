@@ -7,6 +7,7 @@ import com.example.themovieapps.misc.Misc
 import com.example.themovieapps.model.Movie
 import com.example.themovieapps.model.MovieResponse
 import com.example.themovieapps.service.MovieDBService
+import com.example.themovieapps.service.RetrofitClient
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -18,14 +19,9 @@ class MovieViewModel : ViewModel() {
     val listMovies = MutableLiveData<ArrayList<Movie>>()
 
     internal fun setMovie(locale: String) {
-        val retrofit = Retrofit.Builder()
-            .baseUrl(Misc.BASE_URL)
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
-
-        val service = retrofit.create(MovieDBService::class.java)
-        val call = service.getAllMovieData(Misc.API_KEY, locale)
-        call.enqueue(object : Callback<MovieResponse> {
+        val mApiService: MovieDBService? = RetrofitClient.client?.create(MovieDBService::class.java)
+        val call = mApiService?.getAllMovieData(Misc.API_KEY, locale)
+        call?.enqueue(object : Callback<MovieResponse> {
             override fun onFailure(call: Call<MovieResponse>, t: Throwable) {
                 Log.d(MovieViewModel::class.java.simpleName, t.message.toString())
             }
@@ -51,6 +47,10 @@ class MovieViewModel : ViewModel() {
             }
 
         })
+    }
+
+    internal fun setMovieBySearch(locale: String) {
+
     }
 
     internal fun getMovies(): MutableLiveData<ArrayList<Movie>> {

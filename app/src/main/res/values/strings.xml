@@ -20,11 +20,11 @@
 
     <!-- Menu Titles -->
     <string name="menu_change_lang">Change Language</string>
+    <string name="menu_search">Search Movie or TV Show</string>
 
     <!-- no_translation -->
     <string name="no_translations">There is no translation for the language you selected</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment" translatable="false">Hello blank fragment</string>
     <string name="desc_image">Description Image</string>
     <string name="failed_insert_data">Failed to Add Favorite</string>
