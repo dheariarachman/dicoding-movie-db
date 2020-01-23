@@ -1,4 +1,4 @@
-package com.example.themovieapps.adapter
+package com.example.themovieapps.adapter.movie
 
 import android.annotation.SuppressLint
 import android.content.Context
@@ -19,15 +19,13 @@ class MovieFavoriteAdapter(private val context: Context?) :
     RecyclerView.Adapter<MovieFavoriteAdapter.ViewHolder>() {
 
     private var onItemCardClick: OnItemCardClick? = null
+    private var listMovieFavorite = ArrayList<Movie>()
 
-    var listMovieFavorite = ArrayList<Movie>()
-        set(listMovieFavorite) {
-            if (listMovieFavorite.size > 0) {
-                this.listMovieFavorite.clear()
-            }
-            this.listMovieFavorite.addAll(listMovieFavorite)
-            notifyDataSetChanged()
-        }
+    fun setDataMovie(movies: ArrayList<Movie>) {
+        listMovieFavorite.clear()
+        listMovieFavorite.addAll(movies)
+        notifyDataSetChanged()
+    }
 
     fun setOnItemCardClick(onItemCardClick: OnItemCardClick) {
         this.onItemCardClick = onItemCardClick
@@ -39,7 +37,7 @@ class MovieFavoriteAdapter(private val context: Context?) :
         return ViewHolder(view)
     }
 
-    override fun getItemCount(): Int = this.listMovieFavorite.size
+    override fun getItemCount(): Int = listMovieFavorite.size
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.bind(listMovieFavorite[position])

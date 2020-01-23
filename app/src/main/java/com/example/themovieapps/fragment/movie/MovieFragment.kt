@@ -1,4 +1,4 @@
-package com.example.themovieapps.fragment
+package com.example.themovieapps.fragment.movie
 
 
 import android.content.ContentValues
@@ -17,12 +17,16 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.themovieapps.R
 import com.example.themovieapps.activity.DetailMovieActivity
-import com.example.themovieapps.adapter.MovieAdapter
-import com.example.themovieapps.db.DatabaseContract
-import com.example.themovieapps.db.MovieHelper
+import com.example.themovieapps.adapter.movie.MovieAdapter
+import com.example.themovieapps.db.movie.FavoriteMovies.Companion.CONTENT_URI_MOVIE
+import com.example.themovieapps.db.movie.FavoriteMovies.Companion.DESC
+import com.example.themovieapps.db.movie.FavoriteMovies.Companion.IMG
+import com.example.themovieapps.db.movie.FavoriteMovies.Companion.TITLE
+import com.example.themovieapps.db.movie.FavoriteMovies.Companion.YEARS
+import com.example.themovieapps.db.movie.FavoriteMovies.Companion._ID
 import com.example.themovieapps.model.Movie
-import com.example.themovieapps.viewmodel.MovieViewModel
 import com.example.themovieapps.viewmodel.SharedViewModel
+import com.example.themovieapps.viewmodel.movie.MovieViewModel
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.fragment_movie.*
 
@@ -33,11 +37,10 @@ class MovieFragment : Fragment() {
 
     private lateinit var movieViewModel: MovieViewModel
     private lateinit var adapter: MovieAdapter
-    private lateinit var movieHelper: MovieHelper
+    private lateinit var sharedViewModel: SharedViewModel
+    private lateinit var snackbar: Snackbar
 
     private var movies = arrayListOf<Movie>()
-
-    private lateinit var sharedViewModel: SharedViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -75,9 +78,6 @@ class MovieFragment : Fragment() {
         movieViewModel.errorResponse.observe(this, Observer {
             Toast.makeText(this.context, it, Toast.LENGTH_SHORT).show()
         })
-
-        movieHelper = MovieHelper.getInstance(activity?.applicationContext)
-        movieHelper.open()
     }
 
     @RequiresApi(Build.VERSION_CODES.N)
@@ -111,21 +111,33 @@ class MovieFragment : Fragment() {
 
             override fun onSaveMovie(movie: Movie) {
                 val values = ContentValues()
-                values.put(DatabaseContract.FavoriteMovies.TITLE, movie.title)
-                values.put(DatabaseContract.FavoriteMovies.DESC, movie.description)
-                values.put(DatabaseContract.FavoriteMovies.IMG, movie.imgPoster)
-                values.put(DatabaseContract.FavoriteMovies.YEARS, movie.years)
-                values.put(DatabaseContract.FavoriteMovies._ID, movie.id)
+                values.put(TITLE, movie.title)
+                values.put(DESC, movie.description)
+                values.put(IMG, movie.imgPoster)
+                values.put(YEARS, movie.years)
+                values.put(_ID, movie.id)
 
-                val result = movieHelper.insert(values)
-                if (result > 0) {
-                    val success = resources.getString(R.string.success_insert_data, movie.title)
-                    Snackbar.make(rv_movie, success, Snackbar.LENGTH_SHORT).show()
-                } else {
-                    Toast.makeText(activity, R.string.failed_insert_data, Toast.LENGTH_SHORT).show()
+                val hasilUri = activity?.contentResolver?.insert(CONTENT_URI_MOVIE, values)
+                val result = hasilUri?.lastPathSegment?.toInt()
+                if (result != null) {
+                    if (result > 0) {
+                        val success = resources.getString(R.string.success_insert_data, movie.title)
+                        snackbar = Snackbar.make(rv_movie, success, Snackbar.LENGTH_SHORT)
+                        val snackbarView: View = snackbar.view
+                        snackbarView.setBackgroundColor(resources.getColor(R.color.successAdded))
+                        snackbar.show()
+                    } else {
+                        snackbar = Snackbar.make(
+                            rv_movie,
+                            resources.getString(R.string.failed_insert_data_exists, movie.title),
+                            Snackbar.LENGTH_SHORT
+                        )
+                        val snackbarView: View = snackbar.view
+                        snackbarView.setBackgroundColor(resources.getColor(R.color.failedAdded))
+                        snackbar.show()
+                    }
                 }
             }
-
         })
     }
 

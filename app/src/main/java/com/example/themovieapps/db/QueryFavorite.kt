@@ -5,7 +5,8 @@ import android.database.Cursor
 
 interface QueryFavorite {
     fun queryAll(): Cursor
-    fun insert(values: ContentValues): Long
+    fun insert(values: ContentValues?): Long
     fun deleteBy(id: String?): Int
     fun countAll() : Long
+    fun queryById(id: Int?): Boolean
 }

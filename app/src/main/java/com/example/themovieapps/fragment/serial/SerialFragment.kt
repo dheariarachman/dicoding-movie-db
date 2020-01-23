@@ -1,4 +1,4 @@
-package com.example.themovieapps.fragment
+package com.example.themovieapps.fragment.serial
 
 
 import android.content.ContentValues
@@ -17,12 +17,17 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.themovieapps.R
 import com.example.themovieapps.activity.DetailSerialActivity
-import com.example.themovieapps.adapter.SerialAdapter
-import com.example.themovieapps.db.DatabaseContract
-import com.example.themovieapps.db.SerialHelper
+import com.example.themovieapps.adapter.serial.SerialAdapter
+import com.example.themovieapps.db.serial.FavoriteSerial.Companion.CONTENT_URI_SERIAL
+import com.example.themovieapps.db.serial.FavoriteSerial.Companion.DESC
+import com.example.themovieapps.db.serial.FavoriteSerial.Companion.IMG
+import com.example.themovieapps.db.serial.FavoriteSerial.Companion.TITLE
+import com.example.themovieapps.db.serial.FavoriteSerial.Companion.YEARS
+import com.example.themovieapps.db.serial.FavoriteSerial.Companion._ID
 import com.example.themovieapps.model.Serial
-import com.example.themovieapps.viewmodel.SerialViewModel
 import com.example.themovieapps.viewmodel.SharedViewModel
+import com.example.themovieapps.viewmodel.serial.SerialViewModel
+import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.fragment_serial.*
 
 /**
@@ -32,9 +37,8 @@ class SerialFragment : Fragment() {
     private var serial = arrayListOf<Serial>()
     private lateinit var serialAdapter: SerialAdapter
     private lateinit var serialViewModel: SerialViewModel
-    private lateinit var serialHelper: SerialHelper
-
     private lateinit var sharedViewModel: SharedViewModel
+    private lateinit var snackbar: Snackbar
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -48,11 +52,17 @@ class SerialFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        rv_serial.setHasFixedSize(true)
+        serialAdapter = SerialAdapter(serial)
+        serialAdapter.notifyDataSetChanged()
+        rv_serial.layoutManager = LinearLayoutManager(context)
+        rv_serial.adapter = serialAdapter
+
         serialViewModel = ViewModelProvider(
             this,
             ViewModelProvider.NewInstanceFactory()
         ).get(SerialViewModel::class.java)
-        rv_serial.setHasFixedSize(true)
+
         showListSerial()
 
         sharedViewModel = activity?.run {
@@ -73,17 +83,10 @@ class SerialFragment : Fragment() {
         serialViewModel.errorMessage.observe(this, Observer {
             Toast.makeText(this.context, it, Toast.LENGTH_SHORT).show()
         })
-
-        serialHelper = SerialHelper.getInstance(context?.applicationContext)
-        serialHelper.open()
     }
 
     @RequiresApi(Build.VERSION_CODES.N)
     private fun showListSerial() {
-        serialAdapter = SerialAdapter(serial)
-        serialAdapter.notifyDataSetChanged()
-        rv_serial.layoutManager = LinearLayoutManager(context)
-        rv_serial.adapter = serialAdapter
         serialViewModel.setSerialList(resources.configuration.locales.toLanguageTags())
         showLoading(true)
         serialViewModel.getSerialList().observe(this, Observer {
@@ -106,22 +109,33 @@ class SerialFragment : Fragment() {
             override fun onSaveSerialToFavorite(serial: Serial) {
                 val values = ContentValues()
 
-                values.put(DatabaseContract.FavoriteSerial.TITLE, serial.title)
-                values.put(DatabaseContract.FavoriteSerial.DESC, serial.description)
-                values.put(DatabaseContract.FavoriteSerial.IMG, serial.imgPoster)
-                values.put(DatabaseContract.FavoriteSerial.YEARS, serial.years)
-                values.put(DatabaseContract.FavoriteSerial._ID, serial.id)
+                values.put(TITLE, serial.title)
+                values.put(DESC, serial.description)
+                values.put(IMG, serial.imgPoster)
+                values.put(YEARS, serial.years)
+                values.put(_ID, serial.id)
 
-                val result = serialHelper.insert(values)
-                if (result > 0) {
-                    val success = resources.getString(R.string.success_insert_data, serial.title)
-                    Toast.makeText(context, success, Toast.LENGTH_SHORT).show()
-                } else {
-                    Toast.makeText(
-                        context,
-                        resources.getString(R.string.failed_insert_data),
-                        Toast.LENGTH_SHORT
-                    ).show()
+
+                val result = activity?.contentResolver?.insert(CONTENT_URI_SERIAL, values)
+                val resultUri = result?.lastPathSegment?.toInt()
+                if (resultUri != null) {
+                    if (resultUri > 0) {
+                        val success =
+                            resources.getString(R.string.success_insert_data, serial.title)
+                        snackbar = Snackbar.make(rv_serial, success, Snackbar.LENGTH_SHORT)
+                        val snackbarView: View = snackbar.view
+                        snackbarView.setBackgroundColor(resources.getColor(R.color.successAdded))
+                        snackbar.show()
+                    } else {
+                        snackbar = Snackbar.make(
+                            rv_serial,
+                            resources.getString(R.string.failed_insert_data_exists, serial.title),
+                            Snackbar.LENGTH_SHORT
+                        )
+                        val snackbarView: View = snackbar.view
+                        snackbarView.setBackgroundColor(resources.getColor(R.color.failedAdded))
+                        snackbar.show()
+                    }
                 }
             }
         })

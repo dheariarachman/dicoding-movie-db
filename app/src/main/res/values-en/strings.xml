@@ -28,5 +28,6 @@
     <string name="success_remove">%1$s Success Remove from Favorite</string>
     <string name="menu_search">Search Movie or TV Show</string>
     <string name="no_data">There is no data</string>
+    <string name="failed_insert_data_exists">Failed to Add Favorite %1$s exists</string>
 
 </resources>

@@ -1,6 +1,5 @@
-package com.example.themovieapps.adapter
+package com.example.themovieapps.adapter.serial
 
-import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -8,7 +7,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.example.themovieapps.R
-import com.example.themovieapps.adapter.SerialAdapter.SerialViewHolder
+import com.example.themovieapps.adapter.serial.SerialAdapter.SerialViewHolder
 import com.example.themovieapps.misc.Misc.convertStringToDate
 import com.example.themovieapps.model.Serial
 import kotlinx.android.synthetic.main.movie_item.view.*

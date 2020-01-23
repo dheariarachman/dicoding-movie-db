@@ -16,8 +16,8 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.example.themovieapps.R
-import com.example.themovieapps.db.MovieHelper
-import com.example.themovieapps.db.SerialHelper
+import com.example.themovieapps.db.movie.MovieHelper
+import com.example.themovieapps.db.serial.SerialHelper
 import com.example.themovieapps.viewmodel.SharedViewModel
 import kotlinx.android.synthetic.main.activity_main.*
 

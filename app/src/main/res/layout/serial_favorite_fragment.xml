@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".fragment.SerialFavorite">
+    tools:context=".fragment.serial.SerialFavorite">
 
     <ProgressBar
         android:id="@+id/progressBar_serial_favorite"

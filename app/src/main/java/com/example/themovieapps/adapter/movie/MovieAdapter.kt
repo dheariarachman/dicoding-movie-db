@@ -1,4 +1,4 @@
-package com.example.themovieapps.adapter
+package com.example.themovieapps.adapter.movie
 
 import android.view.LayoutInflater
 import android.view.View

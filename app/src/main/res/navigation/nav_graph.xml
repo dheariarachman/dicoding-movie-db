@@ -13,14 +13,14 @@
 
     <fragment
         android:id="@+id/movieFragment"
-        android:name="com.example.themovieapps.fragment.MovieFragment"
+        android:name="com.example.themovieapps.fragment.movie.MovieFragment"
         android:label="@string/title_1"
         tools:layout="@layout/fragment_movie">
     </fragment>
 
     <fragment
         android:id="@+id/serialFragment"
-        android:name="com.example.themovieapps.fragment.SerialFragment"
+        android:name="com.example.themovieapps.fragment.serial.SerialFragment"
         android:label="@string/title_2"
         tools:layout="@layout/fragment_serial">
     </fragment>

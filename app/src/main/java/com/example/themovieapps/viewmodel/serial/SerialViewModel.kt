@@ -1,4 +1,4 @@
-package com.example.themovieapps.viewmodel
+package com.example.themovieapps.viewmodel.serial
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel

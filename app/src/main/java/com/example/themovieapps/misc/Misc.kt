@@ -17,7 +17,6 @@ object Misc {
         secondPattern: String
     ): String {
         var date = ""
-        Log.d("NULL_CHECK", textDate)
         if (textDate != "") {
             val parser = SimpleDateFormat(firstPattern).parse(textDate)
             val formatter = SimpleDateFormat(secondPattern, Locale.getDefault())

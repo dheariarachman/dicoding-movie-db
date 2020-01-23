@@ -1,17 +1,22 @@
-package com.example.themovieapps.db
+package com.example.themovieapps.db.movie
 
 import android.content.ContentValues
 import android.content.Context
 import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
-import com.example.themovieapps.db.DatabaseContract.FavoriteMovies.Companion.TABLE_NAME_MOVIE
-import com.example.themovieapps.db.DatabaseContract.FavoriteMovies.Companion._ID
+import com.example.themovieapps.db.DatabaseHelper
+import com.example.themovieapps.db.QueryFavorite
+import com.example.themovieapps.db.movie.FavoriteMovies.Companion.TABLE_NAME_MOVIE
+import com.example.themovieapps.db.movie.FavoriteMovies.Companion._ID
 import java.sql.SQLException
 
-class MovieHelper(context: Context?) : QueryFavorite {
+
+class MovieHelper(context: Context?) :
+    QueryFavorite {
     private lateinit var database: SQLiteDatabase
-    private val databaseHelper: DatabaseHelper = DatabaseHelper(context)
+    private val databaseHelper: DatabaseHelper =
+        DatabaseHelper(context)
 
     companion object {
         private const val DATABASE_TABLE = TABLE_NAME_MOVIE
@@ -21,7 +26,8 @@ class MovieHelper(context: Context?) : QueryFavorite {
             if (INSTANCE == null) {
                 synchronized(SQLiteOpenHelper::class.java) {
                     if (INSTANCE == null) {
-                        INSTANCE = MovieHelper(context)
+                        INSTANCE =
+                            MovieHelper(context)
                     }
                 }
             }
@@ -45,7 +51,7 @@ class MovieHelper(context: Context?) : QueryFavorite {
         return database.query(DATABASE_TABLE, null, null, null, null, null, "$_ID ASC", null)
     }
 
-    override fun insert(values: ContentValues): Long {
+    override fun insert(values: ContentValues?): Long {
         return database.insert(DATABASE_TABLE, null, values)
     }
 
@@ -56,5 +62,18 @@ class MovieHelper(context: Context?) : QueryFavorite {
     override fun countAll(): Long {
         val sqlState = database.compileStatement("SELECT count(*) FROM $DATABASE_TABLE")
         return sqlState.simpleQueryForLong()
+    }
+
+    override fun queryById(id: Int?): Boolean{
+        val idStr = id.toString()
+        val limit = "1"
+        val selection = "$_ID =?"
+        val selectionArgs = arrayOf(idStr)
+
+        val cursor = database.query(DATABASE_TABLE, null, selection, selectionArgs, null, null, null, limit)
+        val exists = (cursor.count > 0)
+        cursor.close()
+        return exists
+
     }
 }

@@ -1,4 +1,4 @@
-package com.example.themovieapps.adapter
+package com.example.themovieapps.adapter.serial
 
 import android.annotation.SuppressLint
 import android.content.Context
@@ -9,7 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.example.themovieapps.R
-import com.example.themovieapps.adapter.SerialFavoriteAdapter.ViewHolder
+import com.example.themovieapps.adapter.serial.SerialFavoriteAdapter.ViewHolder
 import com.example.themovieapps.misc.Misc
 import com.example.themovieapps.misc.Misc.convertStringToDate
 import com.example.themovieapps.model.Serial
@@ -19,14 +19,13 @@ class SerialFavoriteAdapter(context: Context?) : RecyclerView.Adapter<ViewHolder
 
     private var onItemCardClick: OnItemCardClick? = null
 
-    var listFavoriteSerial = ArrayList<Serial>()
-        set(listFavoriteSerial) {
-            if (listFavoriteSerial.size > 0) {
-                this.listFavoriteSerial.clear()
-            }
-            this.listFavoriteSerial.addAll(listFavoriteSerial)
-            notifyDataSetChanged()
-        }
+    private var listFavoriteSerial = ArrayList<Serial>()
+
+    fun setDataSerial(listSerial: ArrayList<Serial>) {
+        listFavoriteSerial.clear()
+        listFavoriteSerial.addAll(listSerial)
+        notifyDataSetChanged()
+    }
 
     override fun onCreateViewHolder(
         parent: ViewGroup,

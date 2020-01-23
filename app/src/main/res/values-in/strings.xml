@@ -34,4 +34,5 @@
     <string name="success_remove">%1$s Berhasil di hapus dari daftar Favorit</string>
     <string name="menu_search">Cari Film dan Serial</string>
     <string name="no_data">Tidak ada data</string>
+    <string name="failed_insert_data_exists">Gagal menambahkan ke Favorit %1$s sudah ada</string>
 </resources>

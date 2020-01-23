@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:fitsSystemWindows="false"
-    tools:context=".fragment.SerialFragment">
+    tools:context=".fragment.serial.SerialFragment">
 
     <ProgressBar
         android:id="@+id/progressBarSerial"
