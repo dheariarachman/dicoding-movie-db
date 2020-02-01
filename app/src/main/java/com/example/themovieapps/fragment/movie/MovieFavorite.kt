@@ -1,11 +1,8 @@
 package com.example.themovieapps.fragment.movie
 
 import android.content.Intent
-import android.database.ContentObserver
 import android.net.Uri
 import android.os.Bundle
-import android.os.Handler
-import android.os.HandlerThread
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -53,20 +50,6 @@ class MovieFavorite : Fragment() {
 
         viewModel = ViewModelProviders.of(this).get(MovieFavoriteViewModel::class.java)
         movieHelper = MovieHelper.getInstance(context?.applicationContext)
-
-        val handlerThread = HandlerThread("DataObserver")
-        handlerThread.start()
-        val handler = Handler(handlerThread.looper)
-
-        val movieObserver = object : ContentObserver(handler) {
-            override fun onChange(selfChange: Boolean) {
-                super.onChange(selfChange)
-                showMovieFavoriteList()
-            }
-        }
-
-        activity?.contentResolver?.registerContentObserver(CONTENT_URI_MOVIE, true, movieObserver)
-
         showMovieFavoriteList()
     }
 

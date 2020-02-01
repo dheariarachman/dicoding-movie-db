@@ -3,11 +3,24 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.movie.Movie">
+    tools:context=".ui.movie.MovieFragment">
 
-    <TextView
+    <com.google.android.material.appbar.AppBarLayout
+        style="@style/Widget.Design.AppBarLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <ProgressBar
+        android:id="@+id/pb_movie"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical|center_horizontal"
+        android:visibility="gone" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_movie_favorite"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="Hello" />
+        tools:listitem="@layout/rv_item_favorite" />
 
 </FrameLayout>

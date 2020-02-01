@@ -1,11 +1,8 @@
 package com.example.themovieapps.fragment.serial
 
 import android.content.Intent
-import android.database.ContentObserver
 import android.net.Uri
 import android.os.Bundle
-import android.os.Handler
-import android.os.HandlerThread
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -51,20 +48,6 @@ class SerialFavorite : Fragment() {
 
         super.onActivityCreated(savedInstanceState)
         viewModel = ViewModelProviders.of(this).get(SerialFavoriteViewModel::class.java)
-
-        val handlerThread = HandlerThread("DataObserver")
-        handlerThread.start()
-        val handler = Handler(handlerThread.looper)
-
-        val serialObserver = object : ContentObserver(handler) {
-            override fun onChange(selfChange: Boolean) {
-                super.onChange(selfChange)
-                loadData()
-            }
-        }
-
-        activity?.contentResolver?.registerContentObserver(CONTENT_URI_SERIAL, true, serialObserver)
-
         loadData()
     }
 

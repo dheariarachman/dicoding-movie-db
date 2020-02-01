@@ -23,11 +23,13 @@
     <string name="menu_change_lang">Change Language</string>
     <string name="no_translations">There is no translation for the language you selected</string>
     <string name="desc_image">Description Image</string>
-    <string name="failed_insert_data">Failed to Add Favorite Movie</string>
     <string name="success_insert_data">%1$s Success Added to Favorite</string>
     <string name="success_remove">%1$s Success Remove from Favorite</string>
     <string name="menu_search">Search Movie or TV Show</string>
     <string name="no_data">There is no data</string>
     <string name="failed_insert_data_exists">Failed to Add Favorite %1$s exists</string>
+    <string name="appwidget_text">EXAMPLE</string>
+    <string name="add_widget">Add widget</string>
+    <string name="empty_text">No Data</string>
 
 </resources>

@@ -16,17 +16,12 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.example.themovieapps.R
-import com.example.themovieapps.db.movie.MovieHelper
-import com.example.themovieapps.db.serial.SerialHelper
 import com.example.themovieapps.viewmodel.SharedViewModel
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
 
-    private lateinit var movieHelper: MovieHelper
-    private lateinit var serialHelper: SerialHelper
     private lateinit var navController: NavController
-
     private lateinit var sharedViewModel: SharedViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -42,13 +37,6 @@ class MainActivity : AppCompatActivity() {
         setupActionBarWithNavController(navController, appBarConfiguration)
         bottom_nav.setupWithNavController(navController)
         supportActionBar?.elevation = 0f
-
-
-        movieHelper = MovieHelper.getInstance(applicationContext)
-        serialHelper = SerialHelper.getInstance(applicationContext)
-
-        movieHelper.open()
-        serialHelper.open()
 
         sharedViewModel = ViewModelProviders.of(this).get(SharedViewModel::class.java)
     }
@@ -90,11 +78,5 @@ class MainActivity : AppCompatActivity() {
             startActivity(mIntent)
         }
         return super.onOptionsItemSelected(item)
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        movieHelper.close()
-        serialHelper.close()
     }
 }

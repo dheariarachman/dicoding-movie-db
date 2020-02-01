@@ -29,10 +29,12 @@
     <string name="menu_change_lang">Ganti Bahasa</string>
     <string name="no_translations">Tidak terdapat terjemahan untuk bahasa yang anda pilih</string>
     <string name="desc_image">Deskripsi Gambar</string>
-    <string name="failed_insert_data">Gagal Menambahkan Favorite Movie</string>
     <string name="success_insert_data">%1$s Berhasil ditambahkan ke Favorit</string>
     <string name="success_remove">%1$s Berhasil di hapus dari daftar Favorit</string>
     <string name="menu_search">Cari Film dan Serial</string>
     <string name="no_data">Tidak ada data</string>
     <string name="failed_insert_data_exists">Gagal menambahkan ke Favorit %1$s sudah ada</string>
+    <string name="appwidget_text">Contoh</string>
+    <string name="add_widget">Tambah widget</string>
+    <string name="empty_text">Tidak Ada Data</string>
 </resources>
