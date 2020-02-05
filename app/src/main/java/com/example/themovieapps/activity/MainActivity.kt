@@ -15,6 +15,7 @@ import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
+import androidx.preference.PreferenceManager
 import com.example.themovieapps.R
 import com.example.themovieapps.viewmodel.SharedViewModel
 import kotlinx.android.synthetic.main.activity_main.*
@@ -23,6 +24,8 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var navController: NavController
     private lateinit var sharedViewModel: SharedViewModel
+
+    var dailyReminder: Boolean? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,6 +42,8 @@ class MainActivity : AppCompatActivity() {
         supportActionBar?.elevation = 0f
 
         sharedViewModel = ViewModelProviders.of(this).get(SharedViewModel::class.java)
+
+        dailyReminder = PreferenceManager.getDefaultSharedPreferences(this).getBoolean("sync_release", false)
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -73,9 +78,16 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        if (item.itemId == R.id.action_change_lang) {
-            val mIntent = Intent(Settings.ACTION_LOCALE_SETTINGS)
-            startActivity(mIntent)
+        when (item.itemId) {
+            R.id.action_change_lang -> {
+                val mIntent = Intent(Settings.ACTION_LOCALE_SETTINGS)
+                startActivity(mIntent)
+            }
+
+            R.id.action_setting_reminder -> {
+                val settingIntent = Intent(this, SettingsActivity::class.java)
+                startActivity(settingIntent)
+            }
         }
         return super.onOptionsItemSelected(item)
     }

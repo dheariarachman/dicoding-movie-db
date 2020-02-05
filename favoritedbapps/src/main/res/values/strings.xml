@@ -7,7 +7,5 @@
     <string name="title_activity_main">MainActivity</string>
     <string name="tab_text_1">Movies</string>
     <string name="tab_text_2">TV SHows</string>
-    <string name="search_item">Search Item</string>
     <string name="change_language">Change Language</string>
-    <string name="query_hint">Search Movie or TV Shows</string>
 </resources>

@@ -12,7 +12,11 @@
     <item
         android:id="@+id/action_change_lang"
         android:icon="@drawable/ic_flag_black_24dp"
-        android:title="@string/menu_change_lang"
-        app:showAsAction="always" />
+        android:title="@string/menu_change_lang" />
+
+    <item
+        android:id="@+id/action_setting_reminder"
+        android:icon="@drawable/ic_settings_white_24dp"
+        android:title="@string/setting_reminder" />
 
 </menu>

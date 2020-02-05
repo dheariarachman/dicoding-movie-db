@@ -1,7 +1,6 @@
 package com.example.themovieapps.misc
 
 import android.annotation.SuppressLint
-import android.util.Log
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -23,5 +22,16 @@ object Misc {
             date = formatter.format(parser)
         }
         return date
+    }
+
+    fun isDateInvalid(date: String, format: String) : Boolean {
+        return try {
+            val df = SimpleDateFormat(format, Locale.getDefault())
+            df.isLenient = false
+            df.parse(date)
+            false
+        } catch (e: Exception) {
+            true
+        }
     }
 }

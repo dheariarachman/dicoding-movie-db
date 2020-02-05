@@ -35,6 +35,14 @@
     <string name="no_data">Tidak ada data</string>
     <string name="failed_insert_data_exists">Gagal menambahkan ke Favorit %1$s sudah ada</string>
     <string name="appwidget_text">Contoh</string>
-    <string name="add_widget">Tambah widget</string>
     <string name="empty_text">Tidak Ada Data</string>
+    <string name="setting_reminder">Pengaturan Pengingat</string>
+    <string name="reminder_release">Penginat Film yang keluar hari ini</string>
+    <string name="reminder_return_to_app">Pengingat untuk kembali ke aplikasi</string>
+    <string name="sync_daily">Pengingat Harian</string>
+    <string name="sync_header">Pengingat</string>
+    <string name="sync_release">Pengingat Film Keluar</string>
+    <string name="title_activity_settings">Pengaturan Pengingat</string>
+    <string name="notificaton_configured">Pengulangan Notifikasi Harian Berhasil di Setting</string>
+    <string name="notificaton_canceled">Konfigurasi Pengingat Harian Dibatalkan</string>
 </resources>

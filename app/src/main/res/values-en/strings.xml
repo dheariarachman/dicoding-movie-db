@@ -29,7 +29,15 @@
     <string name="no_data">There is no data</string>
     <string name="failed_insert_data_exists">Failed to Add Favorite %1$s exists</string>
     <string name="appwidget_text">EXAMPLE</string>
-    <string name="add_widget">Add widget</string>
     <string name="empty_text">No Data</string>
+    <string name="setting_reminder">Setting Reminder</string>
+    <string name="reminder_release">Reminder showing the movie that release today</string>
+    <string name="reminder_return_to_app">Reminder for return to app</string>
+    <string name="sync_daily">Daily Reminder</string>
+    <string name="sync_header">Reminder</string>
+    <string name="sync_release">Release Reminder</string>
+    <string name="title_activity_settings">Settings Reminder</string>
+    <string name="notificaton_configured">Repeating Daily Notification Success</string>
+    <string name="notificaton_canceled">Repeating Daily Notification Canceled</string>
 
 </resources>

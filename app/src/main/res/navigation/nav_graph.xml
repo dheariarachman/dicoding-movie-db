@@ -26,12 +26,10 @@
     </fragment>
 
     <activity
-        android:id="@+id/detailMovieActivity"
         android:name="com.example.themovieapps.activity.DetailMovieActivity"
         android:label="DetailMovieActivity" />
 
     <activity
-        android:id="@+id/detailSerialActivity"
         android:name="com.example.themovieapps.activity.DetailSerialActivity"
         android:label="DetailSerialActivity" />
 </navigation>
