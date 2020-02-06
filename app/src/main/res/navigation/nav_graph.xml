@@ -24,12 +24,4 @@
         android:label="@string/title_2"
         tools:layout="@layout/fragment_serial">
     </fragment>
-
-    <activity
-        android:name="com.example.themovieapps.activity.DetailMovieActivity"
-        android:label="DetailMovieActivity" />
-
-    <activity
-        android:name="com.example.themovieapps.activity.DetailSerialActivity"
-        android:label="DetailSerialActivity" />
 </navigation>

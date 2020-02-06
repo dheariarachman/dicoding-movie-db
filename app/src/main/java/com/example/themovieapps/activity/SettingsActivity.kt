@@ -1,6 +1,7 @@
 package com.example.themovieapps.activity
 
 import android.os.Bundle
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
@@ -39,23 +40,21 @@ class SettingsActivity : AppCompatActivity() {
                 if (statusDaily != null) {
                     if (statusDaily) {
                         val hourOfDay = 0
-                        val minuteOfDay = 1
+                        val minuteOfDay = 0
+                        val second = 5
                         val calendar = Calendar.getInstance()
                         calendar.set(Calendar.HOUR_OF_DAY, hourOfDay)
                         calendar.set(Calendar.MINUTE, minuteOfDay)
-                        val dateFormat = SimpleDateFormat("HH:mm", Locale.getDefault())
-
-                        catalogueReceiver.setNotification(
+                        calendar.set(Calendar.SECOND, second)
+                        val dateFormat = SimpleDateFormat("HH:mm:ss", Locale.getDefault())
+                        catalogueReceiver.setRepeatingNotification(
                             context,
-                            CatalogueReceiver.TYPE_REPEATING,
+                            CatalogueReceiver.TYPE_REPEAT,
                             dateFormat.format(calendar.time),
-                            resources.getString(R.string.title_2)
+                            resources.getString(R.string.lipsum)
                         )
                     } else {
-                        catalogueReceiver.cancelNotificationDaily(
-                            context,
-                            CatalogueReceiver.TYPE_REPEATING
-                        )
+                        Toast.makeText(context, "Di Batalkan", Toast.LENGTH_SHORT).show()
                     }
                 }
             }
