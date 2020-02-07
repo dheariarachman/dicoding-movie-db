@@ -45,4 +45,6 @@
     <string name="title_activity_settings">Pengaturan Pengingat</string>
     <string name="notificaton_configured">Pengulangan Notifikasi Harian Berhasil di Setting</string>
     <string name="notificaton_canceled">Konfigurasi Pengingat Harian Dibatalkan</string>
+    <string name="notification_string_message_dailiy">Hay, Apakah Kau tidak merindukanku ?</string>
+    <string name="notificaton_release_configured">Notifikasi film yang tayang hari ini berhasil di aktifkan</string>
 </resources>

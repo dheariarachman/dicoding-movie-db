@@ -11,7 +11,9 @@ import android.graphics.BitmapFactory
 import android.os.Build
 import android.widget.Toast
 import androidx.core.app.NotificationCompat
+import androidx.lifecycle.ViewModelProviders
 import com.example.themovieapps.misc.Misc.isDateInvalid
+import com.example.themovieapps.viewmodel.movie.MovieViewModel
 import java.util.*
 
 class CatalogueReceiver : BroadcastReceiver() {
@@ -26,16 +28,20 @@ class CatalogueReceiver : BroadcastReceiver() {
         private const val ID_REPEAT = 101
 
         private const val TIME_FORMAT = "HH:mm:ss"
+        private const val DATE_FORMAT = "yyyy-MM-dd"
     }
+
+    private lateinit var movieViewModel: MovieViewModel
 
     override fun onReceive(context: Context?, intent: Intent?) {
         val type = intent?.getStringExtra(EXTRA_TYPE)
         val message = intent?.getStringExtra(EXTRA_MESSAGE)
 
-        val title = if (type.equals(TYPE_RELEASE, ignoreCase = true)) TYPE_RELEASE else TYPE_REPEAT
         val notifyId = if (type.equals(TYPE_RELEASE, ignoreCase = true)) ID_RELEASE else ID_REPEAT
 
-        showNotification(context, title, message, notifyId)
+        showNotification(context, context?.resources?.getString(R.string.app_name), message, notifyId)
+
+
     }
 
     fun setRepeatingNotification(context: Context?, type: String, time: String, message: String) {
@@ -54,6 +60,41 @@ class CatalogueReceiver : BroadcastReceiver() {
         calendar.set(Calendar.SECOND, Integer.parseInt(timeArray[2]))
 
         val pendingIntent = PendingIntent.getBroadcast(context, ID_REPEAT, intent, 0)
+        alarmManager.setInexactRepeating(
+            AlarmManager.RTC_WAKEUP,
+            calendar.timeInMillis,
+            AlarmManager.INTERVAL_DAY,
+            pendingIntent
+        )
+
+        Toast.makeText(
+            context,
+            context?.resources?.getString(R.string.notificaton_configured),
+            Toast.LENGTH_SHORT
+        ).show()
+    }
+
+    fun setReleasedMovieNotification(
+        context: Context?,
+        type: String,
+        time: String,
+        message: String
+    ) {
+        if (isDateInvalid(time, TIME_FORMAT)) return
+
+        val alarmManager = context?.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+        val intent = Intent(context, CatalogueReceiver::class.java)
+        intent.putExtra(EXTRA_MESSAGE, message)
+        intent.putExtra(EXTRA_TYPE, type)
+
+        val timeArray = time.split(":".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
+
+        val calendar = Calendar.getInstance()
+        calendar.set(Calendar.HOUR_OF_DAY, Integer.parseInt(timeArray[0]))
+        calendar.set(Calendar.MINUTE, Integer.parseInt(timeArray[1]))
+        calendar.set(Calendar.SECOND, Integer.parseInt(timeArray[2]))
+
+        val pendingIntent = PendingIntent.getBroadcast(context, ID_RELEASE, intent, 0)
         alarmManager.setInexactRepeating(
             AlarmManager.RTC_WAKEUP,
             calendar.timeInMillis,

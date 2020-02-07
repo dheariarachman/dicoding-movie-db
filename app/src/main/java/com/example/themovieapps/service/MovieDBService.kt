@@ -1,11 +1,8 @@
 package com.example.themovieapps.service
 
-import com.example.themovieapps.misc.Misc
 import com.example.themovieapps.model.MovieResponse
 import com.example.themovieapps.model.SerialResponse
 import retrofit2.Call
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.GET
 import retrofit2.http.Query
 
@@ -65,4 +62,18 @@ interface MovieDBService {
             "query"
         ) query: String
     ): Call<SerialResponse>
+
+    /**
+     * get movie released today
+     * @param api_key
+     * @param primary_release_date_gte
+     * @param primary_release_date_lte
+     */
+
+    @GET("3/discover/movie?")
+    fun getReleasedMovieToday(
+        @Query("api_key") api_key: String,
+        @Query("primary_release_date.gte") primary_release_date_gte: String,
+        @Query("primary_release_date.lte") primary_release_date_lte: String
+    ) : Call<MovieResponse>
 }
