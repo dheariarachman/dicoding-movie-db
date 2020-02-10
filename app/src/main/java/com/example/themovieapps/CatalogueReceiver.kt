@@ -11,16 +11,14 @@ import android.graphics.BitmapFactory
 import android.os.Build
 import android.widget.Toast
 import androidx.core.app.NotificationCompat
-import androidx.lifecycle.ViewModelProviders
-import com.example.themovieapps.BuildConfig.API_KEY
 import com.example.themovieapps.misc.Misc.isDateInvalid
 import com.example.themovieapps.model.MovieResponse
 import com.example.themovieapps.service.MovieDBService
 import com.example.themovieapps.service.RetrofitClient
-import com.example.themovieapps.viewmodel.movie.MovieViewModel
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.text.SimpleDateFormat
 import java.util.*
 
 class CatalogueReceiver : BroadcastReceiver() {
@@ -117,6 +115,14 @@ class CatalogueReceiver : BroadcastReceiver() {
         ).show()
     }
 
+    /**
+     * @param context
+     * @param title
+     * @param message
+     * @param notifyId
+     *
+     * @return void
+     */
     private fun showNotification(
         context: Context?,
         title: String?,
@@ -126,20 +132,63 @@ class CatalogueReceiver : BroadcastReceiver() {
         val NOTIFICATION_ID = notifyId
         val CHANNEL_ID = "Channel_1"
         val CHANNEL_NAME = "AlarmManager channel"
+        var notificationManagerCompat: NotificationManager?
+        var mBuilderNotification: NotificationCompat.Builder? = null
 
-        val notificationManagerCompat =
-            context?.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-        val mBuilderNotification = NotificationCompat.Builder(context, CHANNEL_ID)
-            .setSmallIcon(R.drawable.ic_notifications_white_24dp)
-            .setLargeIcon(
-                BitmapFactory.decodeResource(
-                    context.resources,
-                    R.drawable.ic_notifications_white_24dp
+        if (NOTIFICATION_ID == ID_RELEASE) {
+            notificationManagerCompat =
+                context?.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+            val sdf = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+            val currentDate = sdf.format(Date())
+
+            if (isDateInvalid(currentDate, DATE_FORMAT)) return
+
+            val mApiService: MovieDBService? =
+                RetrofitClient.client?.create(MovieDBService::class.java)
+            val call =
+                mApiService?.getReleasedMovieToday(BuildConfig.API_KEY, currentDate, currentDate)
+            call?.enqueue(object : Callback<MovieResponse> {
+                override fun onFailure(call: Call<MovieResponse>, t: Throwable) {
+                    TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+                }
+
+                override fun onResponse(
+                    call: Call<MovieResponse>,
+                    response: Response<MovieResponse>
+                ) {
+                    if (response.code() == 200) {
+                        response.body()?.results?.forEach {
+                            mBuilderNotification = NotificationCompat.Builder(context, CHANNEL_ID)
+                                .setSmallIcon(R.drawable.ic_notifications_white_24dp)
+                                .setLargeIcon(
+                                    BitmapFactory.decodeResource(
+                                        context.resources,
+                                        R.drawable.ic_notifications_white_24dp
+                                    )
+                                )
+                                .setContentTitle(it.title)
+                                .setContentText(it.overview)
+                                .setAutoCancel(true)
+                        }
+                    }
+                }
+
+            })
+        } else {
+            notificationManagerCompat =
+                context?.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+            mBuilderNotification = NotificationCompat.Builder(context, CHANNEL_ID)
+                .setSmallIcon(R.drawable.ic_notifications_white_24dp)
+                .setLargeIcon(
+                    BitmapFactory.decodeResource(
+                        context.resources,
+                        R.drawable.ic_notifications_white_24dp
+                    )
                 )
-            )
-            .setContentTitle(title)
-            .setContentText(message)
-            .setAutoCancel(true)
+                .setContentTitle(title)
+                .setContentText(message)
+                .setAutoCancel(true)
+        }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val channel = NotificationChannel(
@@ -148,13 +197,17 @@ class CatalogueReceiver : BroadcastReceiver() {
                 NotificationManager.IMPORTANCE_DEFAULT
             )
             channel.description = CHANNEL_NAME
-            mBuilderNotification.setChannelId(CHANNEL_ID)
-            notificationManagerCompat.createNotificationChannel(channel)
+            mBuilderNotification?.setChannelId(CHANNEL_ID)
+            notificationManagerCompat.run {
+                channel.description = CHANNEL_NAME
+                mBuilderNotification?.setChannelId(CHANNEL_ID)
+                createNotificationChannel(channel)
+            }
         }
 
-        val notification = mBuilderNotification.build()
+        val notification = mBuilderNotification?.build()
 
-        NOTIFICATION_ID?.let { notificationManagerCompat.notify(it, notification) }
+        NOTIFICATION_ID?.let { notificationManagerCompat.run { notify(it, notification) } }
     }
 
     fun cancelNotificationRepeat(context: Context?, type: String) {
@@ -170,22 +223,5 @@ class CatalogueReceiver : BroadcastReceiver() {
             context.resources.getString(R.string.notificaton_canceled),
             Toast.LENGTH_SHORT
         ).show()
-    }
-
-    private fun getReleasedMovie(date: String) {
-        if (isDateInvalid(date, DATE_FORMAT)) return
-
-        val mApiService: MovieDBService? = RetrofitClient.client?.create(MovieDBService::class.java)
-        val call = mApiService?.getReleasedMovieToday(API_KEY, date, date)
-        call?.enqueue(object : Callback<MovieResponse> {
-            override fun onFailure(call: Call<MovieResponse>, t: Throwable) {
-                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-            }
-
-            override fun onResponse(call: Call<MovieResponse>, response: Response<MovieResponse>) {
-                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-            }
-
-        })
     }
 }
