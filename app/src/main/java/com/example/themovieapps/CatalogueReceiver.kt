@@ -12,8 +12,15 @@ import android.os.Build
 import android.widget.Toast
 import androidx.core.app.NotificationCompat
 import androidx.lifecycle.ViewModelProviders
+import com.example.themovieapps.BuildConfig.API_KEY
 import com.example.themovieapps.misc.Misc.isDateInvalid
+import com.example.themovieapps.model.MovieResponse
+import com.example.themovieapps.service.MovieDBService
+import com.example.themovieapps.service.RetrofitClient
 import com.example.themovieapps.viewmodel.movie.MovieViewModel
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 import java.util.*
 
 class CatalogueReceiver : BroadcastReceiver() {
@@ -31,17 +38,18 @@ class CatalogueReceiver : BroadcastReceiver() {
         private const val DATE_FORMAT = "yyyy-MM-dd"
     }
 
-    private lateinit var movieViewModel: MovieViewModel
-
     override fun onReceive(context: Context?, intent: Intent?) {
         val type = intent?.getStringExtra(EXTRA_TYPE)
         val message = intent?.getStringExtra(EXTRA_MESSAGE)
 
         val notifyId = if (type.equals(TYPE_RELEASE, ignoreCase = true)) ID_RELEASE else ID_REPEAT
 
-        showNotification(context, context?.resources?.getString(R.string.app_name), message, notifyId)
-
-
+        showNotification(
+            context,
+            context?.resources?.getString(R.string.app_name),
+            message,
+            notifyId
+        )
     }
 
     fun setRepeatingNotification(context: Context?, type: String, time: String, message: String) {
@@ -162,5 +170,22 @@ class CatalogueReceiver : BroadcastReceiver() {
             context.resources.getString(R.string.notificaton_canceled),
             Toast.LENGTH_SHORT
         ).show()
+    }
+
+    private fun getReleasedMovie(date: String) {
+        if (isDateInvalid(date, DATE_FORMAT)) return
+
+        val mApiService: MovieDBService? = RetrofitClient.client?.create(MovieDBService::class.java)
+        val call = mApiService?.getReleasedMovieToday(API_KEY, date, date)
+        call?.enqueue(object : Callback<MovieResponse> {
+            override fun onFailure(call: Call<MovieResponse>, t: Throwable) {
+                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+            }
+
+            override fun onResponse(call: Call<MovieResponse>, response: Response<MovieResponse>) {
+                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+            }
+
+        })
     }
 }
