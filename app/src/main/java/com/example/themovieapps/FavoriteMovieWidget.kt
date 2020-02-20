@@ -31,7 +31,8 @@ class FavoriteMovieWidget : AppWidgetProvider() {
             val widgetText = context.getString(R.string.appwidget_text)
             // Construct the RemoteViews object
             val views = RemoteViews(context.packageName, R.layout.favorite_movie_widget)
-            views.setTextViewText(R.id.appwidget_text, widgetText)
+//            views.setTextViewText(R.id.appwidget_text, widgetText)
+            views.setRemoteAdapter(R.id.stack_view, intent)
             views.setEmptyView(R.id.stack_view, R.id.empty_view)
 
             val toastIntent = Intent(context, FavoriteMovieWidget::class.java)
