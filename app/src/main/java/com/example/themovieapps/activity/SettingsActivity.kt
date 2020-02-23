@@ -32,65 +32,68 @@ class SettingsActivity : AppCompatActivity() {
         }
 
         override fun onPreferenceTreeClick(preference: Preference?): Boolean {
-            if (preference?.key == context?.getString(R.string.key_daily)) {
-                val statusDaily: Boolean? = preference?.sharedPreferences?.getBoolean(
-                    resources.getString(R.string.key_daily),
-                    false
-                )
-                if (statusDaily != null) {
-                    if (statusDaily) {
-                        val hourOfDay = 7
-                        val minuteOfDay = 0
-                        val second = 0
-                        val calendar = Calendar.getInstance()
-                        calendar.set(Calendar.HOUR_OF_DAY, hourOfDay)
-                        calendar.set(Calendar.MINUTE, minuteOfDay)
-                        calendar.set(Calendar.SECOND, second)
+            when (preference?.key) {
+                resources.getString(R.string.key_daily) -> {
+                    val statusNotificationDaily: Boolean? = preference.sharedPreferences.getBoolean(
+                        resources.getString(R.string.key_daily),
+                        false
+                    )
+                    if (statusNotificationDaily != null) {
+                        if (statusNotificationDaily == true) {
+                            val hourOfDay = 7
+                            val minuteOfDay = 0
+                            val second = 0
+                            val calendar = Calendar.getInstance()
+                            calendar.set(Calendar.HOUR_OF_DAY, hourOfDay)
+                            calendar.set(Calendar.MINUTE, minuteOfDay)
+                            calendar.set(Calendar.SECOND, second)
 
-                        val dateFormat = SimpleDateFormat("HH:mm:ss", Locale.getDefault())
-                        catalogueReceiver.setRepeatingNotification(
-                            context,
-                            CatalogueReceiver.TYPE_REPEAT,
-                            dateFormat.format(calendar.time),
-                            resources.getString(R.string.notification_string_message_dailiy)
-                        )
-                    } else {
-                        catalogueReceiver.cancelNotificationRepeat(
-                            context,
-                            CatalogueReceiver.TYPE_REPEAT
-                        )
+                            val dateFormat = SimpleDateFormat("HH:mm:ss", Locale.getDefault())
+                            catalogueReceiver.setRepeatingNotification(
+                                context,
+                                CatalogueReceiver.TYPE_REPEAT,
+                                dateFormat.format(calendar.time),
+                                resources.getString(R.string.notification_string_message_dailiy)
+                            )
+                        } else {
+                            catalogueReceiver.cancelNotificationRepeat(
+                                context,
+                                CatalogueReceiver.TYPE_REPEAT
+                            )
+                        }
                     }
                 }
-            } else if (preference?.key == resources.getString(R.string.key_release)) {
-                val releaseMovie: Boolean? = preference.sharedPreferences.getBoolean(
-                    resources.getString(R.string.key_release),
-                    false
-                )
-
-                if (releaseMovie != null) {
-                    if (releaseMovie) {
-                        Toast.makeText(context, "Status $releaseMovie", Toast.LENGTH_SHORT).show()
-                        val hourOfDay = 8
-                        val minuteOfDay = 0
-                        val second = 0
-
-                        val calendar = Calendar.getInstance()
-                        calendar.set(Calendar.HOUR_OF_DAY, hourOfDay)
-                        calendar.set(Calendar.MINUTE, minuteOfDay)
-                        calendar.set(Calendar.SECOND, second)
-
-                        val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
-                        catalogueReceiver.setReleasedMovieNotification(
-                            context,
-                            CatalogueReceiver.TYPE_RELEASE,
-                            dateFormat.format(calendar.time),
-                            resources.getString(R.string.notificaton_release_configured)
+                resources.getString(R.string.key_release) -> {
+                    val statusNotificationRepeat: Boolean? =
+                        preference.sharedPreferences.getBoolean(
+                            resources.getString(R.string.key_release),
+                            false
                         )
-                    } else {
-                        catalogueReceiver.cancelNotificationRepeat(
-                            context,
-                            CatalogueReceiver.TYPE_RELEASE
-                        )
+
+                    if (statusNotificationRepeat != null) {
+                        if (statusNotificationRepeat == true) {
+                            val hourOfDay = 8
+                            val minuteOfDay = 0
+                            val second = 0
+
+                            val calendar = Calendar.getInstance()
+                            calendar.set(Calendar.HOUR_OF_DAY, hourOfDay)
+                            calendar.set(Calendar.MINUTE, minuteOfDay)
+                            calendar.set(Calendar.SECOND, second)
+
+                            val dateFormat = SimpleDateFormat("HH:mm:ss", Locale.getDefault())
+                            catalogueReceiver.setReleasedMovieNotification(
+                                context,
+                                CatalogueReceiver.TYPE_RELEASE,
+                                dateFormat.format(calendar.time),
+                                resources.getString(R.string.notificaton_release_configured)
+                            )
+                        } else {
+                            catalogueReceiver.cancelNotificationRepeat(
+                                context,
+                                CatalogueReceiver.TYPE_RELEASE
+                            )
+                        }
                     }
                 }
             }

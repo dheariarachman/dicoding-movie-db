@@ -47,4 +47,5 @@
     <string name="notificaton_canceled">Konfigurasi Pengingat Harian Dibatalkan</string>
     <string name="notification_string_message_dailiy">Hay, Apakah Kau tidak merindukanku ?</string>
     <string name="notificaton_release_configured">Notifikasi film yang tayang hari ini berhasil di aktifkan</string>
+    <string name="notificaton_release_canceled">Notifikasi Release Berhasil di Batalkan</string>
 </resources>

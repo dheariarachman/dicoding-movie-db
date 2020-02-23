@@ -28,10 +28,7 @@ class FavoriteMovieWidget : AppWidgetProvider() {
             intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId)
             intent.data = intent.toUri(Intent.URI_INTENT_SCHEME).toUri()
 
-            val widgetText = context.getString(R.string.appwidget_text)
-            // Construct the RemoteViews object
             val views = RemoteViews(context.packageName, R.layout.favorite_movie_widget)
-//            views.setTextViewText(R.id.appwidget_text, widgetText)
             views.setRemoteAdapter(R.id.stack_view, intent)
             views.setEmptyView(R.id.stack_view, R.id.empty_view)
 

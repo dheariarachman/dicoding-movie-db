@@ -9,9 +9,11 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.BitmapFactory
 import android.os.Build
+import android.util.Log
 import android.widget.Toast
 import androidx.core.app.NotificationCompat
 import com.example.themovieapps.misc.Misc.isDateInvalid
+import com.example.themovieapps.model.Movie
 import com.example.themovieapps.model.MovieResponse
 import com.example.themovieapps.service.MovieDBService
 import com.example.themovieapps.service.RetrofitClient
@@ -22,6 +24,8 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 class CatalogueReceiver : BroadcastReceiver() {
+
+    private val movieReleaseToday = ArrayList<Movie>()
 
     companion object {
         const val TYPE_RELEASE = "ReleaseNotification"
@@ -42,12 +46,16 @@ class CatalogueReceiver : BroadcastReceiver() {
 
         val notifyId = if (type.equals(TYPE_RELEASE, ignoreCase = true)) ID_RELEASE else ID_REPEAT
 
-        showNotification(
-            context,
-            context?.resources?.getString(R.string.app_name),
-            message,
-            notifyId
-        )
+        if (notifyId == ID_RELEASE) {
+            getReleasedMovie(context)
+        } else {
+            showNotificationDaily(
+                context,
+                context?.resources?.getString(R.string.app_name),
+                message,
+                notifyId
+            )
+        }
     }
 
     fun setRepeatingNotification(context: Context?, type: String, time: String, message: String) {
@@ -75,9 +83,56 @@ class CatalogueReceiver : BroadcastReceiver() {
 
         Toast.makeText(
             context,
-            context?.resources?.getString(R.string.notificaton_configured),
+            context.resources?.getString(R.string.notificaton_configured),
             Toast.LENGTH_SHORT
         ).show()
+    }
+
+    private fun showNotificationDaily(
+        context: Context?,
+        title: String?,
+        message: String?,
+        notifyId: Int?
+    ) {
+        val NOTIFICATION_ID = notifyId
+        val CHANNEL_ID = "Channel_1"
+        val CHANNEL_NAME = "Daily Alarm Channel"
+        val notificationManagerCompat: NotificationManager?
+        val mBuilderNotification: NotificationCompat.Builder?
+
+        notificationManagerCompat =
+            context?.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        mBuilderNotification = NotificationCompat.Builder(context, CHANNEL_ID)
+            .setSmallIcon(R.drawable.ic_notifications_white_24dp)
+            .setLargeIcon(
+                BitmapFactory.decodeResource(
+                    context.resources,
+                    R.drawable.ic_notifications_white_24dp
+                )
+            )
+            .setContentTitle(title)
+            .setContentText(message)
+            .setAutoCancel(true)
+
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val channel = NotificationChannel(
+                CHANNEL_ID,
+                CHANNEL_NAME,
+                NotificationManager.IMPORTANCE_DEFAULT
+            )
+            channel.description = CHANNEL_NAME
+            mBuilderNotification?.setChannelId(CHANNEL_ID)
+            notificationManagerCompat.run {
+                channel.description = CHANNEL_NAME
+                mBuilderNotification?.setChannelId(CHANNEL_ID)
+                createNotificationChannel(channel)
+            }
+        }
+
+        val notification = mBuilderNotification?.build()
+
+        NOTIFICATION_ID?.let { notificationManagerCompat.run { notify(it, notification) } }
     }
 
     fun setReleasedMovieNotification(
@@ -110,7 +165,7 @@ class CatalogueReceiver : BroadcastReceiver() {
 
         Toast.makeText(
             context,
-            context?.resources?.getString(R.string.notificaton_configured),
+            context.resources?.getString(R.string.notificaton_configured),
             Toast.LENGTH_SHORT
         ).show()
     }
@@ -123,73 +178,33 @@ class CatalogueReceiver : BroadcastReceiver() {
      *
      * @return void
      */
-    private fun showNotification(
+    private fun showReleasedNotification(
         context: Context?,
         title: String?,
         message: String?,
         notifyId: Int?
     ) {
         val NOTIFICATION_ID = notifyId
-        val CHANNEL_ID = "Channel_1"
-        val CHANNEL_NAME = "AlarmManager channel"
-        var notificationManagerCompat: NotificationManager?
-        var mBuilderNotification: NotificationCompat.Builder? = null
+        val CHANNEL_ID = "Channel_2"
+        val CHANNEL_NAME = "Released Movie Channel"
+        val notificationManagerCompat: NotificationManager?
+        val mBuilderNotification: NotificationCompat.Builder?
 
-        if (NOTIFICATION_ID == ID_RELEASE) {
-            notificationManagerCompat =
-                context?.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-            val sdf = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
-            val currentDate = sdf.format(Date())
-
-            if (isDateInvalid(currentDate, DATE_FORMAT)) return
-
-            val mApiService: MovieDBService? =
-                RetrofitClient.client?.create(MovieDBService::class.java)
-            val call =
-                mApiService?.getReleasedMovieToday(BuildConfig.API_KEY, currentDate, currentDate)
-            call?.enqueue(object : Callback<MovieResponse> {
-                override fun onFailure(call: Call<MovieResponse>, t: Throwable) {
-                    TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-                }
-
-                override fun onResponse(
-                    call: Call<MovieResponse>,
-                    response: Response<MovieResponse>
-                ) {
-                    if (response.code() == 200) {
-                        response.body()?.results?.forEach {
-                            mBuilderNotification = NotificationCompat.Builder(context, CHANNEL_ID)
-                                .setSmallIcon(R.drawable.ic_notifications_white_24dp)
-                                .setLargeIcon(
-                                    BitmapFactory.decodeResource(
-                                        context.resources,
-                                        R.drawable.ic_notifications_white_24dp
-                                    )
-                                )
-                                .setContentTitle(it.title)
-                                .setContentText(it.overview)
-                                .setAutoCancel(true)
-                        }
-                    }
-                }
-
-            })
-        } else {
-            notificationManagerCompat =
-                context?.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-            mBuilderNotification = NotificationCompat.Builder(context, CHANNEL_ID)
-                .setSmallIcon(R.drawable.ic_notifications_white_24dp)
-                .setLargeIcon(
-                    BitmapFactory.decodeResource(
-                        context.resources,
-                        R.drawable.ic_notifications_white_24dp
-                    )
+        notificationManagerCompat =
+            context?.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        mBuilderNotification = NotificationCompat.Builder(context, CHANNEL_ID)
+            .setSmallIcon(R.drawable.ic_notifications_white_24dp)
+            .setLargeIcon(
+                BitmapFactory.decodeResource(
+                    context.resources,
+                    R.drawable.ic_notifications_white_24dp
                 )
-                .setContentTitle(title)
-                .setContentText(message)
-                .setAutoCancel(true)
-        }
+            )
+            .setContentTitle(title)
+            .setContentText(message)
+            .setAutoCancel(true)
 
+        val notification = mBuilderNotification?.build()
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val channel = NotificationChannel(
                 CHANNEL_ID,
@@ -205,9 +220,9 @@ class CatalogueReceiver : BroadcastReceiver() {
             }
         }
 
-        val notification = mBuilderNotification?.build()
-
-        NOTIFICATION_ID?.let { notificationManagerCompat.run { notify(it, notification) } }
+        NOTIFICATION_ID?.let {
+            notificationManagerCompat.run { notify(it, notification) }
+        }
     }
 
     fun cancelNotificationRepeat(context: Context?, type: String) {
@@ -218,10 +233,47 @@ class CatalogueReceiver : BroadcastReceiver() {
         val pendingIntent = PendingIntent.getBroadcast(context, requestCode, intent, 0)
         pendingIntent.cancel()
         alarmManager.cancel(pendingIntent)
-        Toast.makeText(
-            context,
-            context.resources.getString(R.string.notificaton_canceled),
-            Toast.LENGTH_SHORT
-        ).show()
+        if (type.equals(TYPE_RELEASE, ignoreCase = true)) {
+            Toast.makeText(
+                context,
+                context.resources.getString(R.string.notificaton_release_canceled),
+                Toast.LENGTH_SHORT
+            ).show()
+        } else {
+            Toast.makeText(
+                context,
+                context.resources.getString(R.string.notificaton_canceled),
+                Toast.LENGTH_SHORT
+            ).show()
+        }
+    }
+
+    private fun getReleasedMovie(context: Context?) {
+        val sdf = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+        val currentDate = sdf.format(Date())
+        if (isDateInvalid(currentDate, DATE_FORMAT)) return
+        val mApiService: MovieDBService? =
+            RetrofitClient.client?.create(MovieDBService::class.java)
+        val call =
+            mApiService?.getReleasedMovieToday(BuildConfig.API_KEY, currentDate, currentDate)
+        call?.enqueue(object : Callback<MovieResponse> {
+            override fun onFailure(call: Call<MovieResponse>, t: Throwable) {
+            }
+
+            override fun onResponse(
+                call: Call<MovieResponse>,
+                response: Response<MovieResponse>
+            ) {
+                if (response.isSuccessful) {
+                    var id = 2
+                    Log.d("Reponse", "Response : ${response.body()}")
+                    response.body()?.results?.forEach {
+                        showReleasedNotification(context, it.title, it.overview, id)
+                        id++
+                    }
+                }
+            }
+
+        })
     }
 }

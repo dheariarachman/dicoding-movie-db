@@ -44,6 +44,7 @@
     <string name="key_daily" translatable="false">sync_daily</string>
     <string name="notificaton_configured">Repeating Daily Notification Success</string>
     <string name="notificaton_canceled">Repeating Daily Notification Canceled</string>
+    <string name="notificaton_release_canceled">Released Notification Canceled</string>
     <string name="notification_string_message_dailiy">Hi, do you not miss me ?</string>
     <string name="notificaton_release_configured">Release Movie Notification Success</string>
 
